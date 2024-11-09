@@ -35,7 +35,7 @@
             "switchAble":true,
             "searchKey":"RigidBody",
             "removeAble":true,
-            "props":{"type":"kinematic","presetID":3,"preset":"laya/pages/prefabs/fruites/tomatoPre.prefab"},
+            "props":{"presetID":3,"preset":"laya/pages/prefabs/fruites/tomatoPre.prefab"},
             "nodeParent":56,
             "label":"RigidBody(tomatoPre)",
             "isDirectory":false,

@@ -8,8 +8,6 @@ export module ui.scenes {
 		public bg:Laya.Sprite;
 		public contentBox:Laya.Box;
 		public bottleImg:Laya.Image;
-		public leftArrow:Laya.Image;
-		public rightArrow:Laya.Image;
 		public deadline:Laya.Sprite;
         constructor(){ super()}
         createChildren():void {

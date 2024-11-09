@@ -17,8 +17,8 @@ export default class FruitePhysicsComp extends Script {
         this.collider = this.owner.getComponent(CircleCollider);
         this.rigidbody = this.owner.getComponent(RigidBody);
         this.collider.radius *= (this.fruite.parent as Box).scaleX;
-        this.rigidbody.setVelocity({ x: 0, y: FRUITE_SPEED })
     }
+
 
     onTriggerEnter(other: any, self: any, contact: any): void {
         if (other.label === self.label) {

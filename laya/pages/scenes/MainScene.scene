@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":66,
+    "selectedBox":66,
+    "selecteID":8,
     "searchKey":"Scene",
     "props":{"width":750,"sceneColor":"#000000","runtime":"scene/MainScene.ts","height":1624},
     "nodeParent":-1,
-    "maxID":88,
+    "maxID":89,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -161,34 +161,6 @@
                 },
                 {
                     "x":30,
-                    "type":"Image",
-                    "searchKey":"Image,leftArrow,leftArrow",
-                    "props":{"y":989,"x":324,"var":"leftArrow","skin":"main/arrow.png","scaleX":-1,"name":"leftArrow"},
-                    "nodeParent":66,
-                    "label":"leftArrow",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":6,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
-                    "type":"Image",
-                    "searchKey":"Image,rightArrow,rightArrow",
-                    "props":{"y":989,"x":436,"var":"rightArrow","skin":"main/arrow.png","name":"rightArrow"},
-                    "nodeParent":66,
-                    "label":"rightArrow",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":8,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,deadline",
                     "props":{"y":58,"x":36,"var":"deadline","texture":"main/deadline.png"},
@@ -246,6 +218,22 @@
                             "child":[
                                 ]
                         }]
+                },
+                {
+                    "x":30,
+                    "type":"Sprite",
+                    "searchKey":"Sprite,touchArea",
+                    "props":{"y":-242.5,"x":2,"width":750,"name":"touchArea","height":1624},
+                    "nodeParent":66,
+                    "label":"touchArea",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":88,
+                    "child":[
+                        ],
+                    "$HIDDEN":true
                 },
                 {
                     "x":30,
