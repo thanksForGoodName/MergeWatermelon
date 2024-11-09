@@ -180,7 +180,6 @@
                 }
                 if (pos) {
                     fruit.pos(pos.x, pos.y);
-                    console.log('pos.x, pos.y', pos.x, pos.y);
                 }
                 else {
                     fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
@@ -192,25 +191,36 @@
             this.touchArea.on(Laya.Event.MOUSE_DOWN, this, this.drawLine);
             this.touchArea.on(Laya.Event.MOUSE_MOVE, this, this.rightOrLeftMove);
             this.touchArea.on(Laya.Event.MOUSE_UP, this, this.stopRL);
+            this.touchArea.on(Laya.Event.MOUSE_OUT, this, this.stopRL);
         }
         drawLine() {
-            const fromX = this.controllingObj.owner.width / 2;
-            const fromY = this.controllingObj.owner.height;
-            const toY = this.bottleImg.height;
-            this.redLine = this.controllingObj.owner.graphics.drawLine(fromX, fromY, fromX, toY, '#ff0000', 2);
+            if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
+                const fromX = this.controllingObj.owner.width / 2;
+                const fromY = this.controllingObj.owner.height;
+                const toY = this.bottleImg.height;
+                this.redLine = this.controllingObj.owner.graphics.drawLine(fromX, fromY, fromX, toY, '#ff0000', 2);
+            }
         }
         rightOrLeftMove() {
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
                 this.controllingObj.owner.x = this.touchArea.mouseX;
+                if (!this.redLine) {
+                    this.drawLine();
+                }
             }
         }
         stopRL() {
-            this.controllingObj.owner.offAllCaller(this);
-            this.redLine.lineWidth = 0;
-            this.controllingObj.rigidbody.gravityScale = 1;
-            this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
-            this.controllingObj = null;
-            this.regularAddFruite();
+            if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
+                this.controllingObj.owner.offAllCaller(this);
+                if (this.redLine) {
+                    this.redLine.lineWidth = 0;
+                    this.redLine = null;
+                }
+                this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
+                this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+                this.controllingObj = null;
+                this.regularAddFruite();
+            }
         }
         markAsInBottle(fruit) {
             this.inBottleArr.push(fruit);
