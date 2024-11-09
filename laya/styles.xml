@@ -1,0 +1,16 @@
+<res>
+   <item name="fruite" type="" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="main" type="" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="main/bottle.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/apple.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/cucumber.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/kiwifruite.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/megranate.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/orange.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/pepper.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/tomato.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="fruite/watermelon.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="main/arrow.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="main/bg.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="main/deadline.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+</res>
