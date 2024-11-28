@@ -19,7 +19,7 @@
             "switchAble":true,
             "searchKey":"CircleCollider",
             "removeAble":true,
-            "props":{"y":8,"x":0,"radius":159,"presetID":2,"preset":"laya/pages/prefabs/fruites/tomatoPre.prefab","label":"tomatoPre"},
+            "props":{"y":8,"x":0,"restitution":0.7,"radius":159,"presetID":2,"preset":"laya/pages/prefabs/fruites/tomatoPre.prefab","label":"tomatoPre"},
             "nodeParent":56,
             "label":"CircleCollider(tomatoPre)",
             "isDirectory":false,

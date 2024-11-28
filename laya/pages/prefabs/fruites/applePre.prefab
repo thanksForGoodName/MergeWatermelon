@@ -36,7 +36,7 @@
             "switchAble":true,
             "searchKey":"CircleCollider",
             "removeAble":true,
-            "props":{"y":2.5,"x":0,"radius":147.5,"presetID":3,"preset":"laya/pages/prefabs/fruites/applePre.prefab","label":"applePre"},
+            "props":{"y":2.5,"x":0,"restitution":0.7,"radius":147.5,"presetID":3,"preset":"laya/pages/prefabs/fruites/applePre.prefab","label":"applePre"},
             "nodeParent":25,
             "label":"CircleCollider(applePre)",
             "isDirectory":false,

@@ -19,7 +19,7 @@
             "switchAble":true,
             "searchKey":"CircleCollider",
             "removeAble":true,
-            "props":{"y":3,"x":0,"radius":59,"presetID":2,"preset":"laya/pages/prefabs/fruites/watermelonPre.prefab","label":"watermelonPre"},
+            "props":{"y":3,"x":0,"restitution":0.7,"radius":59,"presetID":2,"preset":"laya/pages/prefabs/fruites/watermelonPre.prefab","label":"watermelonPre"},
             "nodeParent":60,
             "label":"CircleCollider(watermelonPre)",
             "isDirectory":false,

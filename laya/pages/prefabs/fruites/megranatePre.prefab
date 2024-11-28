@@ -19,7 +19,7 @@
             "switchAble":true,
             "searchKey":"CircleCollider",
             "removeAble":true,
-            "props":{"y":8,"x":0,"radius":69.5,"presetID":2,"preset":"laya/pages/prefabs/fruites/megranatePre.prefab","label":"megranatePre"},
+            "props":{"y":8,"x":0,"restitution":0.7,"radius":69.5,"presetID":2,"preset":"laya/pages/prefabs/fruites/megranatePre.prefab","label":"megranatePre"},
             "nodeParent":44,
             "label":"CircleCollider(megranatePre)",
             "isDirectory":false,

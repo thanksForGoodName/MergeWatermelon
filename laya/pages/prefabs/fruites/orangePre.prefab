@@ -19,7 +19,7 @@
             "switchAble":true,
             "searchKey":"CircleCollider",
             "removeAble":true,
-            "props":{"y":2.5,"x":0,"radius":52.5,"presetID":2,"preset":"laya/pages/prefabs/fruites/orangePre.prefab","label":"orangePre"},
+            "props":{"y":2.5,"x":0,"restitution":0.7,"radius":52.5,"presetID":2,"preset":"laya/pages/prefabs/fruites/orangePre.prefab","label":"orangePre"},
             "nodeParent":48,
             "label":"CircleCollider(orangePre)",
             "isDirectory":false,
