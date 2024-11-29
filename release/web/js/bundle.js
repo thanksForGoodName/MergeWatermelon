@@ -111,6 +111,16 @@
             this.rigidbody = this.owner.getComponent(RigidBody$1);
             this.collider.radius *= this.fruite.parent.scaleX;
         }
+        onUpdate() {
+            this.checkOutStatus();
+        }
+        checkOutStatus() {
+            if (this.fruite.y >= Laya.stage.height) {
+                this.fruite.removeSelf();
+                this.fruite.destroy();
+                console.log('水果掉出瓶子之外了，销毁');
+            }
+        }
         onTriggerEnter(other, self, contact) {
             if (other.label === self.label) {
                 if (!other.owner || !self.owner) {
@@ -152,9 +162,42 @@
         }
     }
 
-    var Script$3 = Laya.Script;
-    var Handler$1 = Laya.Handler;
+    class Singleton {
+        static instance(c) {
+            if (!this.ins) {
+                this.ins = new c();
+            }
+            return this.ins;
+        }
+    }
+
     var Loader = Laya.Loader;
+    var Handler$1 = Laya.Handler;
+    class ResourceManager extends Singleton {
+        constructor() {
+            super();
+            this.loadedCount = 0;
+        }
+        loadFruitesPre(success) {
+            if (!this.prefabsMap) {
+                this.prefabsMap = new Map();
+                for (let i = 0; i < LEVEL_ARRAY.length; i++) {
+                    const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[i]}.prefab`;
+                    Laya.loader.load(url, Handler$1.create(this, (prefab) => {
+                        this.prefabsMap.set(LEVEL_ARRAY[i], prefab);
+                        this.loadedCount += 1;
+                        if (this.loadedCount === LEVEL_ARRAY.length) {
+                            if (success) {
+                                success();
+                            }
+                        }
+                    }), null, Loader.PREFAB);
+                }
+            }
+        }
+    }
+
+    var Script$3 = Laya.Script;
     class FruitesController extends Script$3 {
         constructor() {
             super(...arguments);
@@ -165,7 +208,9 @@
             this.touchArea = this.box.getChildByName('touchArea');
             this.bottleImg = this.box.getChildByName('bottleImg');
             this.registerEvent();
-            this.regularAddFruite();
+            Singleton.instance(ResourceManager).loadFruitesPre(() => {
+                this.regularAddFruite();
+            });
         }
         registerEvent() {
             Laya.stage.on('loadFruite', this, this.loadFruite);
@@ -186,23 +231,21 @@
             });
         }
         loadFruite(level, pos, needControl = true) {
-            const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[level]}.prefab`;
-            Laya.loader.load(url, Handler$1.create(this, (prefab) => {
-                const fruit = prefab.create();
-                this.box.addChild(fruit);
-                if (needControl) {
-                    this.controllingObj = fruit.getComponent(FruitePhysicsComp);
-                    this.controllingObj.rigidbody.gravityScale = 0;
-                    this.registFruitesEvent();
-                }
-                if (pos) {
-                    fruit.pos(pos.x, pos.y);
-                }
-                else {
-                    fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
-                    fruit.y = this.bottleImg.y - fruit.height;
-                }
-            }), null, Loader.PREFAB);
+            const fruitePre = Singleton.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level]);
+            const fruit = fruitePre.create();
+            this.box.addChild(fruit);
+            if (needControl) {
+                this.controllingObj = fruit.getComponent(FruitePhysicsComp);
+                this.controllingObj.rigidbody.gravityScale = 0;
+                this.registFruitesEvent();
+            }
+            if (pos) {
+                fruit.pos(pos.x, pos.y);
+            }
+            else {
+                fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
+                fruit.y = this.bottleImg.y - fruit.height;
+            }
         }
         registFruitesEvent() {
             this.touchArea.on(Laya.Event.MOUSE_DOWN, this, this.drawLine);
