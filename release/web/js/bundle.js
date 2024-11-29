@@ -145,7 +145,7 @@
             const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
             Laya.Tween.to(other, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
                 other.removeSelf();
-                Laya.stage.event('loadFruite', [level, pos, false]);
+                Laya.stage.event('createFruite', [level, pos, false]);
             }));
             Laya.Tween.to(self, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
                 self.removeSelf();
@@ -198,9 +198,11 @@
     }
 
     var Script$3 = Laya.Script;
+    var Sprite = Laya.Sprite;
     class FruitesController extends Script$3 {
         constructor() {
             super(...arguments);
+            this.guideLine = new Sprite();
             this.inBottleArr = [];
         }
         onAwake() {
@@ -213,7 +215,7 @@
             });
         }
         registerEvent() {
-            Laya.stage.on('loadFruite', this, this.loadFruite);
+            Laya.stage.on('createFruite', this, this.createFruite);
             Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
         }
         regularAddFruite() {
@@ -224,21 +226,16 @@
                     sum += POSSIBILITY_MAP[fruite];
                     if (rate <= sum) {
                         const level = LEVEL_MAP[fruite];
-                        this.loadFruite(level);
+                        this.createFruite(level);
                         break;
                     }
                 }
             });
         }
-        loadFruite(level, pos, needControl = true) {
+        createFruite(level, pos, needControl = true) {
             const fruitePre = Singleton.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level]);
             const fruit = fruitePre.create();
             this.box.addChild(fruit);
-            if (needControl) {
-                this.controllingObj = fruit.getComponent(FruitePhysicsComp);
-                this.controllingObj.rigidbody.gravityScale = 0;
-                this.registFruitesEvent();
-            }
             if (pos) {
                 fruit.pos(pos.x, pos.y);
             }
@@ -246,35 +243,51 @@
                 fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
                 fruit.y = this.bottleImg.y - fruit.height;
             }
+            if (needControl) {
+                this.controllingObj = fruit.getComponent(FruitePhysicsComp);
+                this.controllingObj.rigidbody.gravityScale = 0;
+                this.registFruitesEvent();
+            }
+            if (this.isMouseDown) {
+                this.drawGuideLine();
+            }
         }
         registFruitesEvent() {
-            this.touchArea.on(Laya.Event.MOUSE_DOWN, this, this.drawLine);
-            this.touchArea.on(Laya.Event.MOUSE_MOVE, this, this.rightOrLeftMove);
-            this.touchArea.on(Laya.Event.MOUSE_UP, this, this.stopRL);
-            this.touchArea.on(Laya.Event.MOUSE_OUT, this, this.stopRL);
+            this.touchArea.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
+            this.touchArea.on(Laya.Event.MOUSE_MOVE, this, this.onAreaMouseMove);
+            this.touchArea.on(Laya.Event.MOUSE_UP, this, this.onAreaMouseUp);
+            this.touchArea.on(Laya.Event.MOUSE_OUT, this, this.onAreaMouseUp);
         }
-        drawLine() {
+        onAreaMouseDown() {
+            this.isMouseDown = true;
+            this.drawGuideLine();
+        }
+        drawGuideLine() {
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
-                const fromX = this.controllingObj.owner.width / 2;
-                const fromY = this.controllingObj.owner.height;
+                const posX = this.controllingObj.owner.width / 2;
+                const posY = this.controllingObj.owner.height;
                 const toY = this.bottleImg.height;
-                this.redLine = this.controllingObj.owner.graphics.drawLine(fromX, fromY, fromX, toY, '#ff0000', 2);
+                if (this.guideLine) {
+                    this.guideLine.removeSelf();
+                    this.guideLine.graphics.clear();
+                }
+                this.guideLine.graphics.drawLine(0, 0, 0, toY, '#ff0000', 2);
+                this.controllingObj.owner.addChild(this.guideLine);
+                this.guideLine.pos(posX, posY);
             }
         }
-        rightOrLeftMove() {
+        onAreaMouseMove() {
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
                 this.controllingObj.owner.x = this.touchArea.mouseX;
-                if (!this.redLine) {
-                    this.drawLine();
-                }
             }
         }
-        stopRL() {
+        onAreaMouseUp() {
+            this.isMouseDown = false;
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
                 this.controllingObj.owner.offAllCaller(this);
-                if (this.redLine) {
-                    this.redLine.lineWidth = 0;
-                    this.redLine = null;
+                if (this.guideLine) {
+                    this.guideLine.removeSelf();
+                    this.guideLine.graphics.clear();
                 }
                 this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
                 this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
