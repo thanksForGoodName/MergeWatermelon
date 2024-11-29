@@ -102,6 +102,8 @@
     var RigidBody$1 = Laya.RigidBody;
     var Script$2 = Laya.Script;
     var Point = Laya.Point;
+    var Handler = Laya.Handler;
+    var Ease = Laya.Ease;
     class FruitePhysicsComp extends Script$2 {
         onAwake() {
             this.fruite = this.owner;
@@ -111,32 +113,47 @@
         }
         onTriggerEnter(other, self, contact) {
             if (other.label === self.label) {
-                const label = other.label;
-                const pos = this.calculateTriggerPoint(other, self);
-                const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
                 if (!other.owner || !self.owner) {
                     return;
                 }
-                (other.owner).removeSelf();
-                (self.owner).removeSelf();
-                other.destroy();
-                self.destroy();
-                Laya.stage.event('loadFruite', [level, pos, false]);
+                const otherFruite = other.owner;
+                const selfFruite = self.owner;
+                const label = other.label.slice(0, other.label.length);
+                const radius = self.radius;
+                other.owner.getComponent(RigidBody$1).destroy();
+                self.owner.getComponent(RigidBody$1).destroy();
+                other.owner.getComponent(CircleCollider).destroy();
+                self.owner.getComponent(CircleCollider).destroy();
+                this.mergeFruite(otherFruite, selfFruite, label, radius);
             }
         }
-        calculateTriggerPoint(other, self) {
-            if (!other.owner || !self.owner) {
+        mergeFruite(other, self, label, radius) {
+            if (!other || !self) {
                 return;
             }
-            const vector = new Point(other.owner.x - self.owner.x, other.owner.y - self.owner.y);
+            const pos = this.calculateTriggerPoint(other, self, radius);
+            const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
+            Laya.Tween.to(other, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
+                other.removeSelf();
+                Laya.stage.event('loadFruite', [level, pos, false]);
+            }));
+            Laya.Tween.to(self, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
+                self.removeSelf();
+            }));
+        }
+        calculateTriggerPoint(other, self, radius) {
+            if (!other || !self) {
+                return;
+            }
+            const vector = new Point(other.x - self.x, other.y - self.y);
             vector.normalize();
-            const pos = { x: self.owner.x + self.radius * vector.x, y: self.owner.y + self.radius * vector.y };
+            const pos = { x: self.x + radius * vector.x, y: self.y + radius * vector.y };
             return pos;
         }
     }
 
     var Script$3 = Laya.Script;
-    var Handler = Laya.Handler;
+    var Handler$1 = Laya.Handler;
     var Loader = Laya.Loader;
     class FruitesController extends Script$3 {
         constructor() {
@@ -170,7 +187,7 @@
         }
         loadFruite(level, pos, needControl = true) {
             const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[level]}.prefab`;
-            Laya.loader.load(url, Handler.create(this, (prefab) => {
+            Laya.loader.load(url, Handler$1.create(this, (prefab) => {
                 const fruit = prefab.create();
                 this.box.addChild(fruit);
                 if (needControl) {
