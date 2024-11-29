@@ -8,6 +8,8 @@ import Loader = Laya.Loader;
 import DrawLineCmd = Laya.DrawLineCmd;
 import Box = Laya.Box;
 import FruitePhysicsComp from "../component/FruitePhysicsComp";
+import ResourceManager from "../manager/ResourceManager";
+import Singleton from "../util/Single";
 
 /**
  * 水果掉落控制器
@@ -31,7 +33,9 @@ export default class FruitesController extends Script {
         this.touchArea = this.box.getChildByName('touchArea') as Sprite;
         this.bottleImg = this.box.getChildByName('bottleImg') as Image;
         this.registerEvent();
-        this.regularAddFruite();
+        Singleton.instance(ResourceManager).loadFruitesPre(() => {
+            this.regularAddFruite();
+        });
     }
 
     registerEvent() {
@@ -56,22 +60,20 @@ export default class FruitesController extends Script {
     }
 
     loadFruite(level: number, pos?: { x: number, y: number }, needControl = true) {
-        const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[level]}.prefab`;
-        Laya.loader.load(url, Handler.create(this, (prefab: Prefab) => {
-            const fruit = prefab.create() as Image;
-            this.box.addChild(fruit);
-            if (needControl) {
-                this.controllingObj = fruit.getComponent(FruitePhysicsComp) as FruitePhysicsComp;
-                this.controllingObj.rigidbody.gravityScale = 0;
-                this.registFruitesEvent();
-            }
-            if (pos) {
-                fruit.pos(pos.x, pos.y);
-            } else {
-                fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
-                fruit.y = this.bottleImg.y - fruit.height
-            }
-        }), null, Loader.PREFAB)
+        const fruitePre = Singleton.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level])
+        const fruit = fruitePre.create() as Image;
+        this.box.addChild(fruit);
+        if (needControl) {
+            this.controllingObj = fruit.getComponent(FruitePhysicsComp) as FruitePhysicsComp;
+            this.controllingObj.rigidbody.gravityScale = 0;
+            this.registFruitesEvent();
+        }
+        if (pos) {
+            fruit.pos(pos.x, pos.y);
+        } else {
+            fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
+            fruit.y = this.bottleImg.y - fruit.height
+        }
     }
 
     registFruitesEvent() {

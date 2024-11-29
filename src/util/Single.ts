@@ -1,4 +1,4 @@
-export default class Single<T> {
+export default class Singleton<T> {
     protected static ins;
 
     public static instance<T>(c: new () => T): T {

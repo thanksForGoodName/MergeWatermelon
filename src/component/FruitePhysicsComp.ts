@@ -21,6 +21,18 @@ export default class FruitePhysicsComp extends Script {
         this.collider.radius *= (this.fruite.parent as Box).scaleX;
     }
 
+    onUpdate(): void {
+        this.checkOutStatus();
+    }
+
+    checkOutStatus() {
+        if (this.fruite.y >= Laya.stage.height) {
+            this.fruite.removeSelf();
+            this.fruite.destroy();
+            console.log('水果掉出瓶子之外了，销毁');
+        }
+    }
+
     onTriggerEnter(other: CircleCollider, self: CircleCollider, contact: any): void {
         if (other.label === self.label) {
             if (!other.owner || !self.owner) {
