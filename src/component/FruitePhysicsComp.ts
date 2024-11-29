@@ -8,6 +8,7 @@ import Point = Laya.Point;
 import Handler = Laya.Handler;
 import Ease = Laya.Ease;
 
+
 export default class FruitePhysicsComp extends Script {
 
     public collider: CircleCollider;
@@ -59,7 +60,7 @@ export default class FruitePhysicsComp extends Script {
 
         Laya.Tween.to(other, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
             other.removeSelf();
-            Laya.stage.event('loadFruite', [level, pos, false]);
+            Laya.stage.event('createFruite', [level, pos, false]);
         }))
         Laya.Tween.to(self, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
             self.removeSelf();

@@ -1,15 +1,12 @@
 import { FRUITE_SPEED, FRUITES_PRE_URL, LEVEL_ARRAY, LEVEL_MAP, POSSIBILITY_MAP } from "../define/ConstDefine";
 import Script = Laya.Script;
-import Prefab = Laya.Prefab;
-import Handler = Laya.Handler;
 import Image = Laya.Image;
 import Sprite = Laya.Sprite;
-import Loader = Laya.Loader;
-import DrawLineCmd = Laya.DrawLineCmd;
 import Box = Laya.Box;
 import FruitePhysicsComp from "../component/FruitePhysicsComp";
 import ResourceManager from "../manager/ResourceManager";
 import Singleton from "../util/Single";
+import DrawLineCmd = Laya.DrawLineCmd;
 
 /**
  * 水果掉落控制器
@@ -22,8 +19,8 @@ export default class FruitesController extends Script {
     public bottleImg: Image;
     public rightArrow: Image;
     public leftArrow: Image;
-
-    public redLine: DrawLineCmd;
+    public guideLine: Sprite = new Sprite();
+    public isMouseDown: boolean;
 
     private inBottleArr = [];
 
@@ -39,7 +36,7 @@ export default class FruitesController extends Script {
     }
 
     registerEvent() {
-        Laya.stage.on('loadFruite', this, this.loadFruite);
+        Laya.stage.on('createFruite', this, this.createFruite);
         Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
     }
 
@@ -51,7 +48,7 @@ export default class FruitesController extends Script {
                 sum += POSSIBILITY_MAP[fruite]
                 if (rate <= sum) {
                     const level = LEVEL_MAP[fruite];
-                    this.loadFruite(level);
+                    this.createFruite(level);
                     break;
                 }
             }
@@ -59,54 +56,67 @@ export default class FruitesController extends Script {
 
     }
 
-    loadFruite(level: number, pos?: { x: number, y: number }, needControl = true) {
+    createFruite(level: number, pos?: { x: number, y: number }, needControl = true) {
         const fruitePre = Singleton.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level])
         const fruit = fruitePre.create() as Image;
         this.box.addChild(fruit);
-        if (needControl) {
-            this.controllingObj = fruit.getComponent(FruitePhysicsComp) as FruitePhysicsComp;
-            this.controllingObj.rigidbody.gravityScale = 0;
-            this.registFruitesEvent();
-        }
         if (pos) {
             fruit.pos(pos.x, pos.y);
         } else {
             fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
             fruit.y = this.bottleImg.y - fruit.height
         }
+        if (needControl) {
+            this.controllingObj = fruit.getComponent(FruitePhysicsComp) as FruitePhysicsComp;
+            this.controllingObj.rigidbody.gravityScale = 0;
+            this.registFruitesEvent();
+        }
+
+        if (this.isMouseDown) {
+            this.drawGuideLine();
+        }
     }
 
     registFruitesEvent() {
-        this.touchArea.on(Laya.Event.MOUSE_DOWN, this, this.drawLine);
-        this.touchArea.on(Laya.Event.MOUSE_MOVE, this, this.rightOrLeftMove);
-        this.touchArea.on(Laya.Event.MOUSE_UP, this, this.stopRL);
-        this.touchArea.on(Laya.Event.MOUSE_OUT, this, this.stopRL);
+        this.touchArea.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
+        this.touchArea.on(Laya.Event.MOUSE_MOVE, this, this.onAreaMouseMove);
+        this.touchArea.on(Laya.Event.MOUSE_UP, this, this.onAreaMouseUp);
+        this.touchArea.on(Laya.Event.MOUSE_OUT, this, this.onAreaMouseUp);
     }
 
-    drawLine() {
+    onAreaMouseDown(): void {
+        this.isMouseDown = true;
+        this.drawGuideLine();
+    }
+
+    drawGuideLine() {
         if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
-            const fromX = (this.controllingObj.owner as Image).width / 2;
-            const fromY = (this.controllingObj.owner as Image).height;
+            const posX = (this.controllingObj.owner as Image).width / 2;
+            const posY = (this.controllingObj.owner as Image).height;
             const toY = this.bottleImg.height;
-            this.redLine = (this.controllingObj.owner as Image).graphics.drawLine(fromX, fromY, fromX, toY, '#ff0000', 2);
+            if (this.guideLine) {
+                this.guideLine.removeSelf();
+                this.guideLine.graphics.clear();
+            }
+            this.guideLine.graphics.drawLine(0, 0, 0, toY, '#ff0000', 2);
+            (this.controllingObj.owner as Image).addChild(this.guideLine);
+            this.guideLine.pos(posX, posY);
         }
     }
 
-    rightOrLeftMove() {
+    onAreaMouseMove() {
         if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
             (this.controllingObj.owner as Image).x = this.touchArea.mouseX;
-            if (!this.redLine) {
-                this.drawLine();
-            }
         }
     }
 
-    stopRL() {
+    onAreaMouseUp() {
+        this.isMouseDown = false;
         if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
             this.controllingObj.owner.offAllCaller(this);
-            if (this.redLine) {
-                this.redLine.lineWidth = 0;
-                this.redLine = null;
+            if (this.guideLine) {
+                this.guideLine.removeSelf();
+                this.guideLine.graphics.clear();
             }
             this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
             this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
