@@ -29,16 +29,18 @@ export default class FruitesController extends Script {
         this.box = this.owner as Box;
         this.touchArea = this.box.getChildByName('touchArea') as Sprite;
         this.bottleImg = this.box.getChildByName('bottleImg') as Image;
-        this.registerEvent();
+        this.registEvent();
         Singleton.instance(ResourceManager).loadFruitesPre(() => {
             this.regularAddFruite();
         });
     }
 
-    registerEvent() {
+    registEvent() {
         Laya.stage.on('createFruite', this, this.createFruite);
         Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
+        Laya.stage.on('releaseControllingObj', this, this.releaseControllingObj);
     }
+
 
     regularAddFruite() {
         Laya.timer.once(1000, this, () => {
@@ -118,10 +120,21 @@ export default class FruitesController extends Script {
                 this.guideLine.removeSelf();
                 this.guideLine.graphics.clear();
             }
-            if (this.controllingObj.rigidbody) {
+            if (this.controllingObj && this.controllingObj.rigidbody) {
                 this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
-                this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
             }
+            if (this.controllingObj && this.controllingObj.rigidbody) {
+                if (this.controllingObj.rigidbody.applyForce) {
+                    this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+                }
+            }
+            this.controllingObj = null;
+            this.regularAddFruite();
+        }
+    }
+
+    releaseControllingObj(fruite: Sprite) {
+        if (this.controllingObj && fruite.getComponent(FruitePhysicsComp) === this.controllingObj) {
             this.controllingObj = null;
             this.regularAddFruite();
         }

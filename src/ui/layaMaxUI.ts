@@ -9,6 +9,8 @@ export module ui.scenes {
 		public contentBox:Laya.Box;
 		public bottleImg:Laya.Image;
 		public deadline:Laya.Sprite;
+		public crown:Laya.Sprite;
+		public scoreBox:Laya.Box;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

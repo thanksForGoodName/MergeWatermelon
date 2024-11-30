@@ -13,4 +13,8 @@
    <item name="main/arrow.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
    <item name="main/bg.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
    <item name="main/deadline.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="anim/light1" type="" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="anim/light1/2.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="anim/light2" type="" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="anim/light3" type="" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
 </res>

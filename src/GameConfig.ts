@@ -3,6 +3,7 @@ import MainScene from "./scene/MainScene"
 import BottlePhysicsComp from "./component/BottlePhysicsComp"
 import DeadlinePhysicsComp from "./component/DeadlinePhysicsComp"
 import FruitesController from "./control/FruitesController"
+import ScoreController from "./component/ScoreController"
 import FruitePhysicsComp from "./component/FruitePhysicsComp"
 /*
 * 游戏初始化配置;
@@ -27,6 +28,7 @@ export default class GameConfig{
         reg("component/BottlePhysicsComp.ts",BottlePhysicsComp);
         reg("component/DeadlinePhysicsComp.ts",DeadlinePhysicsComp);
         reg("control/FruitesController.ts",FruitesController);
+        reg("component/ScoreController.ts",ScoreController);
         reg("component/FruitePhysicsComp.ts",FruitePhysicsComp);
     }
 }

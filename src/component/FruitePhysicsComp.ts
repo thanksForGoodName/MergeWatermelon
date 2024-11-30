@@ -1,4 +1,4 @@
-import { FRUITE_SPEED, LEVEL_ARRAY, LEVEL_MAP } from "../define/ConstDefine";
+import { LEVEL_ARRAY, LEVEL_MAP, SCORE_ARRAY } from "../define/ConstDefine";
 import CircleCollider = Laya.CircleCollider;
 import RigidBody = Laya.RigidBody;
 import Script = Laya.Script;
@@ -39,6 +39,8 @@ export default class FruitePhysicsComp extends Script {
             if (!other.owner || !self.owner) {
                 return;
             }
+            Laya.stage.event('releaseControllingObj', self.owner);
+            Laya.stage.event('releaseControllingObj', other.owner);
             const otherFruite = other.owner as Image;
             const selfFruite = self.owner as Image;
             const label = other.label.slice(0, other.label.length);
@@ -61,6 +63,7 @@ export default class FruitePhysicsComp extends Script {
         Laya.Tween.to(other, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
             other.removeSelf();
             Laya.stage.event('createFruite', [level, pos, false]);
+            Laya.stage.event('addScore', SCORE_ARRAY[level])
         }))
         Laya.Tween.to(self, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
             self.removeSelf();
