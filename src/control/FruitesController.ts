@@ -1,12 +1,10 @@
-import { FRUITE_SPEED, FRUITES_PRE_URL, LEVEL_ARRAY, LEVEL_MAP, POSSIBILITY_MAP } from "../define/ConstDefine";
+import { LEVEL_ARRAY, LEVEL_MAP, POSSIBILITY_MAP } from "../define/ConstDefine";
 import Script = Laya.Script;
 import Image = Laya.Image;
 import Sprite = Laya.Sprite;
 import Box = Laya.Box;
 import FruitePhysicsComp from "../component/FruitePhysicsComp";
-import ResourceManager from "../manager/ResourceManager";
-import Singleton from "../util/Single";
-import DrawLineCmd = Laya.DrawLineCmd;
+import ResourceManager, { aniNames } from "../manager/ResourceManager";
 
 /**
  * 水果掉落控制器
@@ -30,7 +28,7 @@ export default class FruitesController extends Script {
         this.touchArea = this.box.getChildByName('touchArea') as Sprite;
         this.bottleImg = this.box.getChildByName('bottleImg') as Image;
         this.registEvent();
-        Singleton.instance(ResourceManager).loadFruitesPre(() => {
+        ResourceManager.instance(ResourceManager).loadFruitesPre(() => {
             this.regularAddFruite();
         });
     }
@@ -39,6 +37,7 @@ export default class FruitesController extends Script {
         Laya.stage.on('createFruite', this, this.createFruite);
         Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
         Laya.stage.on('releaseControllingObj', this, this.releaseControllingObj);
+        Laya.stage.on('addMergeGlow', this, this.addMergeGlow);
     }
 
 
@@ -59,7 +58,7 @@ export default class FruitesController extends Script {
     }
 
     createFruite(level: number, pos?: { x: number, y: number }, needControl = true) {
-        const fruitePre = Singleton.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level])
+        const fruitePre = ResourceManager.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level])
         const fruit = fruitePre.create() as Image;
         this.box.addChild(fruit);
         if (pos) {
@@ -77,6 +76,10 @@ export default class FruitesController extends Script {
         if (this.isMouseDown) {
             this.drawGuideLine();
         }
+    }
+
+    addMergeGlow(pos: { x: number, y: number }) {
+        ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.bottleImg, 'glow', pos);
     }
 
     registFruitesEvent() {

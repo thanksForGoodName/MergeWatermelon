@@ -1,12 +1,15 @@
 import ScoreController from "../component/ScoreController";
 import { DESIGN_SCREEN_HEIGHT, DESIGN_SCREEN_WIDTH } from "../define/ConstDefine";
+import ResourceManager from "../manager/ResourceManager";
 import { ui } from "../ui/layaMaxUI";
+import Singleton from "../util/Single";
 
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
         this.screenAdapter();
         this.registEvent();
         this.deadline.zOrder = Number.MAX_SAFE_INTEGER;
+        ResourceManager.instance(ResourceManager).loadAnimations()
     }
 
     registEvent() {

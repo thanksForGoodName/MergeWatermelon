@@ -7,6 +7,7 @@ import Box = Laya.Box;
 import Point = Laya.Point;
 import Handler = Laya.Handler;
 import Ease = Laya.Ease;
+import ResourceManager, { aniNames } from "../manager/ResourceManager";
 
 
 export default class FruitePhysicsComp extends Script {
@@ -59,11 +60,12 @@ export default class FruitePhysicsComp extends Script {
         }
         const pos = this.calculateTriggerPoint(other, self, radius);
         const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
+        Laya.stage.event('addMergeGlow', pos);
 
         Laya.Tween.to(other, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
             other.removeSelf();
             Laya.stage.event('createFruite', [level, pos, false]);
-            Laya.stage.event('addScore', SCORE_ARRAY[level])
+            Laya.stage.event('addScore', SCORE_ARRAY[level]);
         }))
         Laya.Tween.to(self, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
             self.removeSelf();
