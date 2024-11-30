@@ -118,8 +118,10 @@ export default class FruitesController extends Script {
                 this.guideLine.removeSelf();
                 this.guideLine.graphics.clear();
             }
-            this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
-            this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+            if (this.controllingObj.rigidbody) {
+                this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
+                this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+            }
             this.controllingObj = null;
             this.regularAddFruite();
         }
