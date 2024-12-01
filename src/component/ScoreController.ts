@@ -13,7 +13,7 @@ export default class ScoreController extends Laya.Script {
     }
 
     public setTextImg(num: number) {
-        ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX, y: this.scoreBox.pivotY });
+        ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
         this.totalScore += num;
         const numStr = this.totalScore.toString();
         for (let i = 0; i < numStr.length; i++) {

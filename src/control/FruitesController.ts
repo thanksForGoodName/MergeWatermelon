@@ -79,7 +79,7 @@ export default class FruitesController extends Script {
     }
 
     addMergeGlow(pos: { x: number, y: number }) {
-        ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.bottleImg, 'glow', pos);
+        ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.box, 'glow', pos);
     }
 
     registFruitesEvent() {

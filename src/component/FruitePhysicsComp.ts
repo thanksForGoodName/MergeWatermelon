@@ -58,30 +58,27 @@ export default class FruitePhysicsComp extends Script {
         if (!other || !self) {
             return;
         }
-        const pos = this.calculateTriggerPoint(other, self, radius);
+        const pos = this.calculateTriggerPoint({ x: other.x, y: other.y }, { x: self.x, y: self.y }, radius);
         const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
-        Laya.stage.event('addMergeGlow', pos);
+        Laya.stage.event('addMergeGlow', { x: pos.x - 80, y: pos.y - 80 });
 
-        Laya.Tween.to(other, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
+        Laya.Tween.to(other, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler.create(this, () => {
             other.removeSelf();
             Laya.stage.event('createFruite', [level, pos, false]);
             Laya.stage.event('addScore', SCORE_ARRAY[level]);
         }))
-        Laya.Tween.to(self, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
+        Laya.Tween.to(self, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler.create(this, () => {
             self.removeSelf();
         }))
     }
 
-    calculateTriggerPoint(other: Image, self: Image, radius: number): { x: number, y: number } {
-        if (!other || !self) {
-            return;
-        }
+    calculateTriggerPoint(otherPos: { x: number, y: number }, selfPos: { x: number, y: number }, radius: number): { x: number, y: number } {
         const vector = new Point(
-            other.x - self.x, other.y - self.y
+            otherPos.x - selfPos.x, otherPos.y - selfPos.y
         );
         vector.normalize();
 
-        const pos = { x: self.x + radius * vector.x, y: self.y + radius * vector.y }
+        const pos = { x: selfPos.x + radius * vector.x, y: selfPos.y + radius * vector.y }
         return pos;
     }
 }

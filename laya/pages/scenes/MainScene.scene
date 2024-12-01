@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":91,
-    "selecteID":101,
+    "selectedBox":66,
+    "selecteID":102,
     "searchKey":"Scene",
     "props":{"width":750,"sceneColor":"#000000","runtime":"scene/MainScene.ts","mouseThrough":true,"height":1624},
     "nodeParent":-1,
-    "maxID":102,
+    "maxID":103,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -220,6 +220,7 @@
                         }]
                 },
                 {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,touchArea",
                     "props":{"y":-242.5,"x":2,"width":750,"name":"touchArea","height":1624},
@@ -235,6 +236,7 @@
                     "$HIDDEN":true
                 },
                 {
+                    "x":30,
                     "type":"Script",
                     "switchAble":true,
                     "source":"src/control/FruitesController.ts",
