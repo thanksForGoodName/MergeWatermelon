@@ -25,7 +25,128 @@
         orangePre: 0.3,
         kiwifruitePre: 0.5,
     };
+    const SCORE_ARRAY = [2, 4, 8, 16, 32, 64, 128, 256];
     const FRUITE_SPEED = 10;
+    const SCORE_IMG_URL = 'score/z';
+
+    class Singleton {
+        static instance(c) {
+            if (!this.ins) {
+                this.ins = new c();
+            }
+            return this.ins;
+        }
+    }
+
+    var Loader = Laya.Loader;
+    var Handler = Laya.Handler;
+    var Animation = Laya.Animation;
+    const aniNames = {
+        mergeLight: 'light2'
+    };
+    class ResourceManager extends Singleton {
+        constructor() {
+            super();
+            this.loadedCount = 0;
+            this.aniMap = new Map();
+        }
+        loadAnimations() {
+            for (let name in aniNames) {
+                const ani = new Animation();
+                ani.loadAtlas(`res/atlas/anim/${aniNames[name]}.atlas`, Handler.create(this, () => {
+                    this.aniMap.set(aniNames[name], [ani]);
+                }));
+            }
+        }
+        loadSpecificAnimation(aniName) {
+            const ani = new Animation();
+            ani.loadAtlas(`res/atlas/anim/${aniName}.atlas`, Handler.create(this, () => {
+                if (this.aniMap.get(aniName)) {
+                    this.aniMap.get(aniName).push(ani);
+                }
+                else {
+                    this.aniMap.set(aniName, [ani]);
+                }
+            }));
+        }
+        playAnimationOnce(aniName, parent, playName, pos) {
+            const ani = this.getAnimation(aniName);
+            if (!ani) {
+                console.log('动画需要加载');
+                return;
+            }
+            ani.size(80, 80);
+            ani.scale(2, 2);
+            ani.pos(pos.x, pos.y);
+            ani.zOrder = Number.MAX_SAFE_INTEGER;
+            parent.addChild(ani);
+            ani.play(0, false);
+            ani.on(Laya.Event.COMPLETE, this, this.recoverAnimation, [ani, aniName]);
+        }
+        getAnimation(aniName) {
+            const ani = this.aniMap.get(aniName).pop();
+            if (!ani) {
+                this.loadSpecificAnimation(aniName);
+                return;
+            }
+            return ani;
+        }
+        recoverAnimation(ani, aniName) {
+            ani.stop();
+            ani.removeSelf();
+            this.aniMap.get(aniName).push(ani);
+        }
+        loadFruitesPre(success) {
+            if (!this.prefabsMap) {
+                this.prefabsMap = new Map();
+                for (let i = 0; i < LEVEL_ARRAY.length; i++) {
+                    const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[i]}.prefab`;
+                    Laya.loader.load(url, Handler.create(this, (prefab) => {
+                        this.prefabsMap.set(LEVEL_ARRAY[i], prefab);
+                        this.loadedCount += 1;
+                        if (this.loadedCount === LEVEL_ARRAY.length) {
+                            if (success) {
+                                success();
+                            }
+                        }
+                    }), null, Loader.PREFAB);
+                }
+            }
+        }
+    }
+
+    var Image = Laya.Image;
+    const numWidth = 39;
+    class ScoreController extends Laya.Script {
+        constructor() {
+            super(...arguments);
+            this.textImgs = [];
+            this.totalScore = 0;
+        }
+        onAwake() {
+            this.scoreBox = this.owner;
+        }
+        setTextImg(num) {
+            ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
+            this.totalScore += num;
+            const numStr = this.totalScore.toString();
+            for (let i = 0; i < numStr.length; i++) {
+                const url = `${SCORE_IMG_URL}${numStr[i]}.png`;
+                if (this.textImgs[i]) {
+                    if (this.textImgs[i].skin !== url) {
+                        this.textImgs[i].skin = url;
+                    }
+                }
+                else {
+                    this.textImgs.push(new Image(url));
+                    this.textImgs[i].pos(i * numWidth, 0);
+                    this.scoreBox.addChild(this.textImgs[i]);
+                    this.scoreBox.width = this.textImgs.length * numWidth;
+                    this.scoreBox.pivot(this.scoreBox.width / 2, this.scoreBox.height / 2);
+                }
+            }
+        }
+    }
 
     var Scene = Laya.Scene;
     var REG = Laya.ClassUtils.regClass;
@@ -48,15 +169,25 @@
     class MainScene extends ui.scenes.MainSceneUI {
         onAwake() {
             this.screenAdapter();
+            this.registEvent();
             this.deadline.zOrder = Number.MAX_SAFE_INTEGER;
+            ResourceManager.instance(ResourceManager).loadAnimations();
+        }
+        registEvent() {
+            Laya.stage.on('addScore', this, this.addScore);
         }
         screenAdapter() {
-            const scaleX = Laya.stage.height / DESIGN_SCREEN_HEIGHT >= 1 ? 1 : Laya.stage.height / DESIGN_SCREEN_HEIGHT;
+            const scale = Laya.stage.height / DESIGN_SCREEN_HEIGHT >= 1 ? 1 : Laya.stage.height / DESIGN_SCREEN_HEIGHT;
             this.bg.width = Laya.stage.width;
             this.bg.height = Laya.stage.height;
-            this.contentBox.scale(scaleX, scaleX);
-            this.contentBox.y *= scaleX;
+            this.contentBox.scale(scale, scale);
+            this.contentBox.y *= scale;
             this.contentBox.x = this.bg.width / 2;
+            this.crown.scale(scale, scale);
+            this.crown.y *= scale;
+        }
+        addScore(num) {
+            this.scoreBox.getComponent(ScoreController).setTextImg(num);
         }
     }
 
@@ -102,7 +233,7 @@
     var RigidBody$1 = Laya.RigidBody;
     var Script$2 = Laya.Script;
     var Point = Laya.Point;
-    var Handler = Laya.Handler;
+    var Handler$1 = Laya.Handler;
     var Ease = Laya.Ease;
     class FruitePhysicsComp extends Script$2 {
         onAwake() {
@@ -126,6 +257,8 @@
                 if (!other.owner || !self.owner) {
                     return;
                 }
+                Laya.stage.event('releaseControllingObj', self.owner);
+                Laya.stage.event('releaseControllingObj', other.owner);
                 const otherFruite = other.owner;
                 const selfFruite = self.owner;
                 const label = other.label.slice(0, other.label.length);
@@ -141,59 +274,23 @@
             if (!other || !self) {
                 return;
             }
-            const pos = this.calculateTriggerPoint(other, self, radius);
+            const pos = this.calculateTriggerPoint({ x: other.x, y: other.y }, { x: self.x, y: self.y }, radius);
             const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
-            Laya.Tween.to(other, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
+            Laya.stage.event('addMergeGlow', { x: pos.x - 80, y: pos.y - 80 });
+            Laya.Tween.to(other, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler$1.create(this, () => {
                 other.removeSelf();
                 Laya.stage.event('createFruite', [level, pos, false]);
+                Laya.stage.event('addScore', SCORE_ARRAY[level]);
             }));
-            Laya.Tween.to(self, { x: pos.x, y: pos.y }, 50, Ease.expoOut, Handler.create(this, () => {
+            Laya.Tween.to(self, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler$1.create(this, () => {
                 self.removeSelf();
             }));
         }
-        calculateTriggerPoint(other, self, radius) {
-            if (!other || !self) {
-                return;
-            }
-            const vector = new Point(other.x - self.x, other.y - self.y);
+        calculateTriggerPoint(otherPos, selfPos, radius) {
+            const vector = new Point(otherPos.x - selfPos.x, otherPos.y - selfPos.y);
             vector.normalize();
-            const pos = { x: self.x + radius * vector.x, y: self.y + radius * vector.y };
+            const pos = { x: selfPos.x + radius * vector.x, y: selfPos.y + radius * vector.y };
             return pos;
-        }
-    }
-
-    class Singleton {
-        static instance(c) {
-            if (!this.ins) {
-                this.ins = new c();
-            }
-            return this.ins;
-        }
-    }
-
-    var Loader = Laya.Loader;
-    var Handler$1 = Laya.Handler;
-    class ResourceManager extends Singleton {
-        constructor() {
-            super();
-            this.loadedCount = 0;
-        }
-        loadFruitesPre(success) {
-            if (!this.prefabsMap) {
-                this.prefabsMap = new Map();
-                for (let i = 0; i < LEVEL_ARRAY.length; i++) {
-                    const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[i]}.prefab`;
-                    Laya.loader.load(url, Handler$1.create(this, (prefab) => {
-                        this.prefabsMap.set(LEVEL_ARRAY[i], prefab);
-                        this.loadedCount += 1;
-                        if (this.loadedCount === LEVEL_ARRAY.length) {
-                            if (success) {
-                                success();
-                            }
-                        }
-                    }), null, Loader.PREFAB);
-                }
-            }
         }
     }
 
@@ -209,14 +306,16 @@
             this.box = this.owner;
             this.touchArea = this.box.getChildByName('touchArea');
             this.bottleImg = this.box.getChildByName('bottleImg');
-            this.registerEvent();
-            Singleton.instance(ResourceManager).loadFruitesPre(() => {
+            this.registEvent();
+            ResourceManager.instance(ResourceManager).loadFruitesPre(() => {
                 this.regularAddFruite();
             });
         }
-        registerEvent() {
+        registEvent() {
             Laya.stage.on('createFruite', this, this.createFruite);
             Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
+            Laya.stage.on('releaseControllingObj', this, this.releaseControllingObj);
+            Laya.stage.on('addMergeGlow', this, this.addMergeGlow);
         }
         regularAddFruite() {
             Laya.timer.once(1000, this, () => {
@@ -233,7 +332,7 @@
             });
         }
         createFruite(level, pos, needControl = true) {
-            const fruitePre = Singleton.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level]);
+            const fruitePre = ResourceManager.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level]);
             const fruit = fruitePre.create();
             this.box.addChild(fruit);
             if (pos) {
@@ -251,6 +350,9 @@
             if (this.isMouseDown) {
                 this.drawGuideLine();
             }
+        }
+        addMergeGlow(pos) {
+            ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.box, 'glow', pos);
         }
         registFruitesEvent() {
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
@@ -289,8 +391,20 @@
                     this.guideLine.removeSelf();
                     this.guideLine.graphics.clear();
                 }
-                this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
-                this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+                if (this.controllingObj && this.controllingObj.rigidbody) {
+                    this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
+                }
+                if (this.controllingObj && this.controllingObj.rigidbody) {
+                    if (this.controllingObj.rigidbody.applyForce) {
+                        this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+                    }
+                }
+                this.controllingObj = null;
+                this.regularAddFruite();
+            }
+        }
+        releaseControllingObj(fruite) {
+            if (this.controllingObj && fruite.getComponent(FruitePhysicsComp) === this.controllingObj) {
                 this.controllingObj = null;
                 this.regularAddFruite();
             }
@@ -309,6 +423,7 @@
             reg("component/BottlePhysicsComp.ts", BottlePhysicsComp);
             reg("component/DeadlinePhysicsComp.ts", DeadlinePhysicsComp);
             reg("control/FruitesController.ts", FruitesController);
+            reg("component/ScoreController.ts", ScoreController);
             reg("component/FruitePhysicsComp.ts", FruitePhysicsComp);
         }
     }
