@@ -125,8 +125,6 @@
         }
         onAwake() {
             this.scoreBox = this.owner;
-            const url = `${SCORE_IMG_URL}0.png`;
-            this.addNewNumChar(url, 0);
         }
         setTextImg(num) {
             ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
@@ -140,16 +138,13 @@
                     }
                 }
                 else {
-                    this.addNewNumChar(url, i);
+                    this.textImgs.push(new Image(url));
+                    this.textImgs[i].pos(i * numWidth, 0);
+                    this.scoreBox.addChild(this.textImgs[i]);
+                    this.scoreBox.width = this.textImgs.length * numWidth;
+                    this.scoreBox.pivot(this.scoreBox.width / 2, this.scoreBox.height / 2);
                 }
             }
-        }
-        addNewNumChar(url, index) {
-            this.textImgs.push(new Image(url));
-            this.textImgs[index].pos(index * numWidth, 0);
-            this.scoreBox.addChild(this.textImgs[index]);
-            this.scoreBox.width = this.textImgs.length * numWidth;
-            this.scoreBox.pivot(this.scoreBox.width / 2, this.scoreBox.height / 2);
         }
     }
 
@@ -188,9 +183,6 @@
             this.contentBox.scale(scale, scale);
             this.contentBox.y *= scale;
             this.contentBox.x = this.bg.width / 2;
-            this.toolBox.scale(scale, scale);
-            this.toolBox.y *= scale;
-            this.toolBox.x = this.bg.width / 2;
             this.crown.scale(scale, scale);
             this.crown.y *= scale;
         }
