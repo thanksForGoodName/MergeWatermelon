@@ -52,7 +52,7 @@
             "switchAble":true,
             "searchKey":"RigidBody",
             "removeAble":true,
-            "props":{"presetID":4,"preset":"laya/pages/prefabs/fruites/applePre.prefab"},
+            "props":{"presetID":4,"preset":"laya/pages/prefabs/fruites/applePre.prefab","gravityScale":7},
             "nodeParent":25,
             "label":"RigidBody(applePre)",
             "isDirectory":false,

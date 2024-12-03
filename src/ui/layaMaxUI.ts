@@ -11,6 +11,8 @@ export module ui.scenes {
 		public deadline:Laya.Sprite;
 		public crown:Laya.Sprite;
 		public scoreBox:Laya.Box;
+		public toolBox:Laya.Box;
+		public toolImg:Laya.Sprite;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

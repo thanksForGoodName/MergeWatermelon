@@ -1,8 +1,7 @@
 import ScoreController from "../component/ScoreController";
-import { DESIGN_SCREEN_HEIGHT, DESIGN_SCREEN_WIDTH } from "../define/ConstDefine";
+import { DESIGN_SCREEN_HEIGHT } from "../define/ConstDefine";
 import ResourceManager from "../manager/ResourceManager";
 import { ui } from "../ui/layaMaxUI";
-import Singleton from "../util/Single";
 
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
@@ -28,6 +27,10 @@ export default class MainScene extends ui.scenes.MainSceneUI {
         this.contentBox.scale(scale, scale);
         this.contentBox.y *= scale
         this.contentBox.x = this.bg.width / 2;
+
+        this.toolBox.scale(scale, scale);
+        this.toolBox.y *= scale
+        this.toolBox.x = this.bg.width / 2;
 
         this.crown.scale(scale, scale);
         this.crown.y *= scale;

@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":66,
-    "selecteID":102,
+    "selectedBox":2,
+    "selecteID":108,
     "searchKey":"Scene",
     "props":{"width":750,"sceneColor":"#000000","runtime":"scene/MainScene.ts","mouseThrough":true,"height":1624},
     "nodeParent":-1,
-    "maxID":103,
+    "maxID":110,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -30,25 +30,38 @@
         },
         {
             "x":15,
+            "type":"Sprite",
+            "searchKey":"Sprite",
+            "props":{"y":0,"x":0,"visible":false,"texture":"糖果积分赛.jpg","alpha":0.5},
+            "nodeParent":2,
+            "label":"Sprite",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":103,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
             "type":"Box",
             "searchKey":"Box,contentBox",
             "props":{"y":812,"x":374,"width":750,"var":"contentBox","pivotY":569,"pivotX":375,"height":1139},
             "nodeParent":2,
             "label":"contentBox",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":66,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,bottleImg,bottleImg",
-                    "props":{"y":21,"x":22,"width":706,"var":"bottleImg","skin":"main/bottle.png","sizeGrid":"60,66,62,69","name":"bottleImg","height":946},
+                    "props":{"y":16,"x":27,"width":727,"var":"bottleImg","skin":"main/bottle.png","sizeGrid":"60,66,62,69","name":"bottleImg","height":929},
                     "nodeParent":66,
                     "label":"bottleImg",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
@@ -57,7 +70,7 @@
                         {
                             "type":"Box",
                             "searchKey":"Box",
-                            "props":{},
+                            "props":{"y":0,"x":3},
                             "nodeParent":3,
                             "label":"Box",
                             "isOpen":false,
@@ -71,7 +84,7 @@
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
                                     "removeAble":true,
-                                    "props":{"y":60,"x":0,"width":706,"label":"bottleSpace","isSensor":true,"height":886},
+                                    "props":{"y":99,"x":22,"width":653,"label":"bottleSpace","isSensor":true,"height":792},
                                     "nodeParent":83,
                                     "label":"BoxCollider",
                                     "isDirectory":false,
@@ -101,7 +114,7 @@
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
                                     "removeAble":true,
-                                    "props":{"y":0,"x":0,"width":22,"label":"bottleEdge","height":946},
+                                    "props":{"y":97,"x":0,"width":22,"label":"bottleEdge","height":793},
                                     "nodeParent":83,
                                     "label":"BoxCollider",
                                     "isDirectory":false,
@@ -116,7 +129,7 @@
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
                                     "removeAble":true,
-                                    "props":{"y":0,"x":684,"width":22,"label":"bottleEdge","height":946},
+                                    "props":{"y":99,"x":674,"width":22,"label":"bottleEdge","height":792},
                                     "nodeParent":83,
                                     "label":"BoxCollider",
                                     "isDirectory":false,
@@ -131,13 +144,73 @@
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
                                     "removeAble":true,
-                                    "props":{"y":945,"x":1,"width":705,"label":"bottleEdge","height":27},
+                                    "props":{"y":890,"x":0,"width":697,"label":"bottleEdge","height":27},
                                     "nodeParent":83,
                                     "label":"BoxCollider",
                                     "isDirectory":false,
                                     "isAniNode":true,
                                     "hasChild":false,
                                     "compId":77,
+                                    "child":[
+                                        ]
+                                },
+                                {
+                                    "type":"BoxCollider",
+                                    "switchAble":true,
+                                    "searchKey":"BoxCollider",
+                                    "removeAble":true,
+                                    "props":{"y":72,"x":-1,"width":128,"label":"bottleEdge","height":27},
+                                    "nodeParent":83,
+                                    "label":"BoxCollider",
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":104,
+                                    "child":[
+                                        ]
+                                },
+                                {
+                                    "type":"BoxCollider",
+                                    "switchAble":true,
+                                    "searchKey":"BoxCollider",
+                                    "removeAble":true,
+                                    "props":{"y":72,"x":568,"width":128,"label":"bottleEdge","height":27},
+                                    "nodeParent":83,
+                                    "label":"BoxCollider",
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":105,
+                                    "child":[
+                                        ]
+                                },
+                                {
+                                    "type":"BoxCollider",
+                                    "switchAble":true,
+                                    "searchKey":"BoxCollider",
+                                    "removeAble":true,
+                                    "props":{"y":9,"x":557,"width":22,"label":"bottleEdge","height":64},
+                                    "nodeParent":83,
+                                    "label":"BoxCollider",
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":106,
+                                    "child":[
+                                        ]
+                                },
+                                {
+                                    "type":"BoxCollider",
+                                    "switchAble":true,
+                                    "searchKey":"BoxCollider",
+                                    "removeAble":true,
+                                    "props":{"y":11,"x":116,"width":22,"label":"bottleEdge","height":61},
+                                    "nodeParent":83,
+                                    "label":"BoxCollider",
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":107,
                                     "child":[
                                         ]
                                 },
@@ -160,13 +233,12 @@
                         }]
                 },
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,deadline",
-                    "props":{"y":58,"x":36,"var":"deadline","texture":"main/deadline.png"},
+                    "props":{"y":115,"x":51.5,"width":651,"var":"deadline","height":14},
                     "nodeParent":66,
                     "label":"deadline",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
@@ -177,7 +249,7 @@
                             "switchAble":true,
                             "searchKey":"BoxCollider",
                             "removeAble":true,
-                            "props":{"width":677,"isSensor":true,"height":8},
+                            "props":{"y":0,"x":0,"width":653,"isSensor":true,"height":14},
                             "nodeParent":9,
                             "label":"BoxCollider",
                             "isDirectory":false,
@@ -220,7 +292,6 @@
                         }]
                 },
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,touchArea",
                     "props":{"y":-242.5,"x":2,"width":750,"name":"touchArea","height":1624},
@@ -236,7 +307,6 @@
                     "$HIDDEN":true
                 },
                 {
-                    "x":30,
                     "type":"Script",
                     "switchAble":true,
                     "source":"src/control/FruitesController.ts",
@@ -260,14 +330,13 @@
             "props":{"y":117,"x":62,"width":94,"var":"crown","texture":"score/crown.png","height":80},
             "nodeParent":2,
             "label":"crown",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":92,
             "child":[
                 {
-                    "x":30,
                     "type":"Box",
                     "searchKey":"Box,scoreBox",
                     "props":{"y":114,"width":87,"var":"scoreBox","pivotY":26,"pivotX":44,"height":51,"centerX":0},
@@ -280,7 +349,6 @@
                     "compId":91,
                     "child":[
                         {
-                            "x":45,
                             "type":"Script",
                             "switchAble":true,
                             "source":"src/component/ScoreController.ts",
@@ -296,6 +364,34 @@
                             "child":[
                                 ]
                         }]
+                }]
+        },
+        {
+            "x":15,
+            "type":"Box",
+            "searchKey":"Box,toolBox",
+            "props":{"y":1298,"x":376,"width":751,"var":"toolBox","pivotY":113,"pivotX":376,"height":225},
+            "nodeParent":2,
+            "label":"toolBox",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":108,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Sprite",
+                    "searchKey":"Sprite,toolImg",
+                    "props":{"y":0,"x":33,"var":"toolImg","texture":"main/toolBox.png"},
+                    "nodeParent":108,
+                    "label":"toolImg",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":109,
+                    "child":[
+                        ]
                 }]
         }],
     "animations":[
