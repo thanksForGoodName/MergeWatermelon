@@ -1,7 +1,8 @@
 import ScoreController from "../component/ScoreController";
-import { DESIGN_SCREEN_HEIGHT } from "../define/ConstDefine";
+import { DESIGN_SCREEN_HEIGHT, FRUITE_IMG_URL } from "../define/ConstDefine";
 import ResourceManager from "../manager/ResourceManager";
 import { ui } from "../ui/layaMaxUI";
+import Image = Laya.Image;
 
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
@@ -13,6 +14,7 @@ export default class MainScene extends ui.scenes.MainSceneUI {
 
     registEvent() {
         Laya.stage.on('addScore', this, this.addScore);
+        Laya.stage.on('setNextFruite', this, this.setNextFruite);
     }
 
     /**
@@ -32,12 +34,19 @@ export default class MainScene extends ui.scenes.MainSceneUI {
         this.toolBox.y *= scale
         this.toolBox.x = this.bg.width / 2;
 
-        this.crown.scale(scale, scale);
-        this.crown.y *= scale;
+        this.topBox.scale(scale, scale);
+        this.topBox.x *= scale;
+        this.topBox.y *= scale;
     }
 
 
     addScore(num: number) {
         (this.scoreBox.getComponent(ScoreController) as ScoreController).setTextImg(num);
+    }
+
+    setNextFruite(level: number) {
+        const skinUrl = `${FRUITE_IMG_URL}${level + 1}.png`;
+        (this.nextImg as Image).skin = skinUrl;
+        this.nextImg.visible = true;
     }
 }

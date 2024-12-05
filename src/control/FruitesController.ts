@@ -19,6 +19,7 @@ export default class FruitesController extends Script {
     public leftArrow: Image;
     public guideLine: Sprite = new Sprite();
     public isMouseDown: boolean;
+    public nextFruiteLevel: number = null;
 
     private inBottleArr = [];
 
@@ -43,18 +44,27 @@ export default class FruitesController extends Script {
 
     regularAddFruite() {
         Laya.timer.once(1000, this, () => {
-            const rate = Math.random();
-            let sum = 0;
-            for (let fruite in POSSIBILITY_MAP) {
-                sum += POSSIBILITY_MAP[fruite]
-                if (rate <= sum) {
-                    const level = LEVEL_MAP[fruite];
-                    this.createFruite(level);
-                    break;
-                }
+            if (!this.nextFruiteLevel) {
+                const curFruite = this.randomAFruiteLevel();
+                this.createFruite(curFruite);
+            } else {
+                this.createFruite(this.nextFruiteLevel);
             }
+            this.nextFruiteLevel = this.randomAFruiteLevel();
+            Laya.stage.event('setNextFruite', this.nextFruiteLevel);
         })
+    }
 
+    randomAFruiteLevel(): number {
+        const rate = Math.random();
+        let sum = 0;
+        for (let fruite in POSSIBILITY_MAP) {
+            sum += POSSIBILITY_MAP[fruite]
+            if (rate <= sum) {
+                const level = LEVEL_MAP[fruite];
+                return level
+            }
+        }
     }
 
     createFruite(level: number, pos?: { x: number, y: number }, needControl = true) {

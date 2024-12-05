@@ -46,3 +46,4 @@ export const SCORE_ARRAY = [2, 4, 8, 16, 32, 64, 128, 256];
 export const FRUITE_SPEED = 10;
 
 export const SCORE_IMG_URL = 'score/z';
+export const FRUITE_IMG_URL = 'fruite/';
