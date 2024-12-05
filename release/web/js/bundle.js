@@ -28,6 +28,7 @@
     const SCORE_ARRAY = [2, 4, 8, 16, 32, 64, 128, 256];
     const FRUITE_SPEED = 10;
     const SCORE_IMG_URL = 'score/z';
+    const FRUITE_IMG_URL = 'fruite/';
 
     class Singleton {
         static instance(c) {
@@ -180,6 +181,7 @@
         }
         registEvent() {
             Laya.stage.on('addScore', this, this.addScore);
+            Laya.stage.on('setNextFruite', this, this.setNextFruite);
         }
         screenAdapter() {
             const scale = Laya.stage.height / DESIGN_SCREEN_HEIGHT >= 1 ? 1 : Laya.stage.height / DESIGN_SCREEN_HEIGHT;
@@ -191,11 +193,17 @@
             this.toolBox.scale(scale, scale);
             this.toolBox.y *= scale;
             this.toolBox.x = this.bg.width / 2;
-            this.crown.scale(scale, scale);
-            this.crown.y *= scale;
+            this.topBox.scale(scale, scale);
+            this.topBox.x *= scale;
+            this.topBox.y *= scale;
         }
         addScore(num) {
             this.scoreBox.getComponent(ScoreController).setTextImg(num);
+        }
+        setNextFruite(level) {
+            const skinUrl = `${FRUITE_IMG_URL}${level + 1}.png`;
+            this.nextImg.skin = skinUrl;
+            this.nextImg.visible = true;
         }
     }
 
@@ -308,6 +316,7 @@
         constructor() {
             super(...arguments);
             this.guideLine = new Sprite();
+            this.nextFruiteLevel = null;
             this.inBottleArr = [];
         }
         onAwake() {
@@ -327,17 +336,27 @@
         }
         regularAddFruite() {
             Laya.timer.once(1000, this, () => {
-                const rate = Math.random();
-                let sum = 0;
-                for (let fruite in POSSIBILITY_MAP) {
-                    sum += POSSIBILITY_MAP[fruite];
-                    if (rate <= sum) {
-                        const level = LEVEL_MAP[fruite];
-                        this.createFruite(level);
-                        break;
-                    }
+                if (!this.nextFruiteLevel) {
+                    const curFruite = this.randomAFruiteLevel();
+                    this.createFruite(curFruite);
                 }
+                else {
+                    this.createFruite(this.nextFruiteLevel);
+                }
+                this.nextFruiteLevel = this.randomAFruiteLevel();
+                Laya.stage.event('setNextFruite', this.nextFruiteLevel);
             });
+        }
+        randomAFruiteLevel() {
+            const rate = Math.random();
+            let sum = 0;
+            for (let fruite in POSSIBILITY_MAP) {
+                sum += POSSIBILITY_MAP[fruite];
+                if (rate <= sum) {
+                    const level = LEVEL_MAP[fruite];
+                    return level;
+                }
+            }
         }
         createFruite(level, pos, needControl = true) {
             const fruitePre = ResourceManager.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level]);
