@@ -1,6 +1,25 @@
 (function () {
     'use strict';
 
+    const FRUITES_PRE_URL = 'prefabs/fruites/';
+    const SCORE_IMG_URL = 'score/z';
+    const FRUITE_IMG_URL = 'fruite/';
+    const UrlResDef = {
+        guideLine: 'main/redline.png'
+    };
+    const JsonResDef = {
+        overGameDialog: 'dialogs/OverGameDialog.json'
+    };
+
+    class Singleton {
+        static instance(c) {
+            if (!this.ins) {
+                this.ins = new c();
+            }
+            return this.ins;
+        }
+    }
+
     const DESIGN_SCREEN_WIDTH = 750;
     const DESIGN_SCREEN_HEIGHT = 1624;
     const LEVEL_MAP = {
@@ -14,7 +33,6 @@
         tomatoPre: 7
     };
     const LEVEL_ARRAY = ['kiwifruitePre', 'orangePre', 'watermelonPre', 'megranatePre', 'cucumberPre', 'pepperPre', 'applePre', 'tomatoPre'];
-    const FRUITES_PRE_URL = 'prefabs/fruites/';
     const POSSIBILITY_MAP = {
         tomatoPre: 0,
         applePre: 0,
@@ -27,17 +45,12 @@
     };
     const SCORE_ARRAY = [2, 4, 8, 16, 32, 64, 128, 256];
     const FRUITE_SPEED = 10;
-    const SCORE_IMG_URL = 'score/z';
-    const FRUITE_IMG_URL = 'fruite/';
-
-    class Singleton {
-        static instance(c) {
-            if (!this.ins) {
-                this.ins = new c();
-            }
-            return this.ins;
-        }
-    }
+    var zOdersEnum;
+    (function (zOdersEnum) {
+        zOdersEnum[zOdersEnum["tool"] = 1000] = "tool";
+        zOdersEnum[zOdersEnum["fruite"] = 999] = "fruite";
+        zOdersEnum[zOdersEnum["guideLine"] = 998] = "guideLine";
+    })(zOdersEnum || (zOdersEnum = {}));
 
     var Loader = Laya.Loader;
     var Handler = Laya.Handler;
@@ -73,7 +86,6 @@
         playAnimationOnce(aniName, parent, playName, pos) {
             const ani = this.getAnimation(aniName);
             if (!ani) {
-                console.log('动画需要加载');
                 return;
             }
             ani.size(80, 80);
@@ -176,7 +188,6 @@
         onAwake() {
             this.screenAdapter();
             this.registEvent();
-            this.deadline.zOrder = Number.MAX_SAFE_INTEGER;
             ResourceManager.instance(ResourceManager).loadAnimations();
         }
         registEvent() {
@@ -228,34 +239,31 @@
             }
             this.box.y *= this.box.scaleX;
         }
-    }
-
-    var BoxCollider$1 = Laya.BoxCollider;
-    var RigidBody = Laya.RigidBody;
-    var Script$1 = Laya.Script;
-    class DeadlinePhysicsComp extends Script$1 {
-        onAwake() {
-            this.collider = this.owner.getComponent(BoxCollider$1);
-            this.rigidbody = this.owner.getComponent(RigidBody);
-        }
         onTriggerExit(other, self, contact) {
-            if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
-                Laya.stage.event('markAsInBottle', other.owner);
+            if (self.label === 'bottleSpace') {
+                Laya.Dialog.open(JsonResDef.overGameDialog);
+            }
+        }
+        onTriggerEnter(other, self, contact) {
+            if (self.label === 'bottleSpace') {
+                if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
+                    Laya.stage.event('markAsInBottle', other.owner);
+                }
             }
         }
     }
 
     var CircleCollider = Laya.CircleCollider;
-    var RigidBody$1 = Laya.RigidBody;
-    var Script$2 = Laya.Script;
+    var RigidBody = Laya.RigidBody;
+    var Script$1 = Laya.Script;
     var Point = Laya.Point;
     var Handler$1 = Laya.Handler;
     var Ease = Laya.Ease;
-    class FruitePhysicsComp extends Script$2 {
+    class FruitePhysicsComp extends Script$1 {
         onAwake() {
             this.fruite = this.owner;
             this.collider = this.owner.getComponent(CircleCollider);
-            this.rigidbody = this.owner.getComponent(RigidBody$1);
+            this.rigidbody = this.owner.getComponent(RigidBody);
             this.collider.radius *= this.fruite.parent.scaleX;
         }
         onUpdate() {
@@ -279,8 +287,8 @@
                 const selfFruite = self.owner;
                 const label = other.label.slice(0, other.label.length);
                 const radius = self.radius;
-                other.owner.getComponent(RigidBody$1).destroy();
-                self.owner.getComponent(RigidBody$1).destroy();
+                other.owner.getComponent(RigidBody).destroy();
+                self.owner.getComponent(RigidBody).destroy();
                 other.owner.getComponent(CircleCollider).destroy();
                 self.owner.getComponent(CircleCollider).destroy();
                 this.mergeFruite(otherFruite, selfFruite, label, radius);
@@ -310,12 +318,11 @@
         }
     }
 
-    var Script$3 = Laya.Script;
-    var Sprite = Laya.Sprite;
-    class FruitesController extends Script$3 {
+    var Script$2 = Laya.Script;
+    var Image$1 = Laya.Image;
+    class FruitesController extends Script$2 {
         constructor() {
             super(...arguments);
-            this.guideLine = new Sprite();
             this.nextFruiteLevel = null;
             this.inBottleArr = [];
         }
@@ -335,7 +342,7 @@
             Laya.stage.on('addMergeGlow', this, this.addMergeGlow);
         }
         regularAddFruite() {
-            Laya.timer.once(1000, this, () => {
+            Laya.timer.once(500, this, () => {
                 if (!this.nextFruiteLevel) {
                     const curFruite = this.randomAFruiteLevel();
                     this.createFruite(curFruite);
@@ -362,11 +369,12 @@
             const fruitePre = ResourceManager.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level]);
             const fruit = fruitePre.create();
             this.box.addChild(fruit);
+            fruit.zOrder = zOdersEnum.fruite;
             if (pos) {
                 fruit.pos(pos.x, pos.y);
             }
             else {
-                fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
+                fruit.x = this.bottleImg.x + (0.5 * this.bottleImg.width);
                 fruit.y = this.bottleImg.y - fruit.height;
             }
             if (needControl) {
@@ -393,21 +401,23 @@
         }
         drawGuideLine() {
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
-                const posX = this.controllingObj.owner.width / 2;
-                const posY = this.controllingObj.owner.height;
-                const toY = this.bottleImg.height;
-                if (this.guideLine) {
-                    this.guideLine.removeSelf();
-                    this.guideLine.graphics.clear();
+                const posX = this.controllingObj.owner.x;
+                const posY = this.controllingObj.owner.y;
+                if (!this.guideLine) {
+                    this.guideLine = new Image$1(UrlResDef.guideLine);
+                    this.box.addChild(this.guideLine);
+                    this.guideLine.zOrder = zOdersEnum.guideLine;
                 }
-                this.guideLine.graphics.drawLine(0, 0, 0, toY, '#ff0000', 2);
-                this.controllingObj.owner.addChild(this.guideLine);
+                this.guideLine.visible = true;
                 this.guideLine.pos(posX, posY);
             }
         }
         onAreaMouseMove() {
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
                 this.controllingObj.owner.x = this.touchArea.mouseX;
+                if (this.guideLine && this.guideLine.visible) {
+                    this.guideLine.x = this.touchArea.mouseX;
+                }
             }
         }
         onAreaMouseUp() {
@@ -415,15 +425,14 @@
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
                 this.controllingObj.owner.offAllCaller(this);
                 if (this.guideLine) {
-                    this.guideLine.removeSelf();
-                    this.guideLine.graphics.clear();
+                    this.guideLine.visible = false;
                 }
                 if (this.controllingObj && this.controllingObj.rigidbody) {
                     this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
                 }
                 if (this.controllingObj && this.controllingObj.rigidbody) {
-                    if (this.controllingObj.rigidbody.applyForce) {
-                        this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+                    if (this.controllingObj.rigidbody.setVelocity) {
+                        this.controllingObj.rigidbody.setVelocity({ x: 0, y: 10 });
                     }
                 }
                 this.controllingObj = null;
@@ -448,7 +457,6 @@
             var reg = Laya.ClassUtils.regClass;
             reg("scene/MainScene.ts", MainScene);
             reg("component/BottlePhysicsComp.ts", BottlePhysicsComp);
-            reg("component/DeadlinePhysicsComp.ts", DeadlinePhysicsComp);
             reg("control/FruitesController.ts", FruitesController);
             reg("component/ScoreController.ts", ScoreController);
             reg("component/FruitePhysicsComp.ts", FruitePhysicsComp);
