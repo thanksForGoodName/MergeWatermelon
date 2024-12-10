@@ -1,10 +1,11 @@
-import { LEVEL_ARRAY, LEVEL_MAP, POSSIBILITY_MAP } from "../define/ConstDefine";
+import { LEVEL_ARRAY, LEVEL_MAP, POSSIBILITY_MAP, zOdersEnum } from "../define/ConstDefine";
 import Script = Laya.Script;
 import Image = Laya.Image;
 import Sprite = Laya.Sprite;
 import Box = Laya.Box;
 import FruitePhysicsComp from "../component/FruitePhysicsComp";
 import ResourceManager, { aniNames } from "../manager/ResourceManager";
+import { UrlResDef } from "../define/UIDefine";
 
 /**
  * 水果掉落控制器
@@ -17,7 +18,7 @@ export default class FruitesController extends Script {
     public bottleImg: Image;
     public rightArrow: Image;
     public leftArrow: Image;
-    public guideLine: Sprite = new Sprite();
+    public guideLine: Image;
     public isMouseDown: boolean;
     public nextFruiteLevel: number = null;
 
@@ -43,7 +44,7 @@ export default class FruitesController extends Script {
 
 
     regularAddFruite() {
-        Laya.timer.once(1000, this, () => {
+        Laya.timer.once(500, this, () => {
             if (!this.nextFruiteLevel) {
                 const curFruite = this.randomAFruiteLevel();
                 this.createFruite(curFruite);
@@ -71,10 +72,11 @@ export default class FruitesController extends Script {
         const fruitePre = ResourceManager.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level])
         const fruit = fruitePre.create() as Image;
         this.box.addChild(fruit);
+        fruit.zOrder = zOdersEnum.fruite;
         if (pos) {
             fruit.pos(pos.x, pos.y);
         } else {
-            fruit.x = this.bottleImg.x + (Math.random() * this.bottleImg.width);
+            fruit.x = this.bottleImg.x + (0.5 * this.bottleImg.width);
             fruit.y = this.bottleImg.y - fruit.height
         }
         if (needControl) {
@@ -106,15 +108,14 @@ export default class FruitesController extends Script {
 
     drawGuideLine() {
         if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
-            const posX = (this.controllingObj.owner as Image).width / 2;
-            const posY = (this.controllingObj.owner as Image).height;
-            const toY = this.bottleImg.height;
-            if (this.guideLine) {
-                this.guideLine.removeSelf();
-                this.guideLine.graphics.clear();
+            const posX = (this.controllingObj.owner as Image).x;
+            const posY = (this.controllingObj.owner as Image).y;
+            if (!this.guideLine) {
+                this.guideLine = new Image(UrlResDef.guideLine);
+                this.box.addChild(this.guideLine);
+                this.guideLine.zOrder = zOdersEnum.guideLine;
             }
-            this.guideLine.graphics.drawLine(0, 0, 0, toY, '#ff0000', 2);
-            (this.controllingObj.owner as Image).addChild(this.guideLine);
+            this.guideLine.visible = true;
             this.guideLine.pos(posX, posY);
         }
     }
@@ -122,6 +123,9 @@ export default class FruitesController extends Script {
     onAreaMouseMove() {
         if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
             (this.controllingObj.owner as Image).x = this.touchArea.mouseX;
+            if (this.guideLine && this.guideLine.visible) {
+                this.guideLine.x = this.touchArea.mouseX;
+            }
         }
     }
 
@@ -130,15 +134,14 @@ export default class FruitesController extends Script {
         if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
             this.controllingObj.owner.offAllCaller(this);
             if (this.guideLine) {
-                this.guideLine.removeSelf();
-                this.guideLine.graphics.clear();
+                this.guideLine.visible = false;
             }
             if (this.controllingObj && this.controllingObj.rigidbody) {
                 this.controllingObj.rigidbody.gravityScale = LEVEL_MAP[this.controllingObj.collider.label] + 1;
             }
             if (this.controllingObj && this.controllingObj.rigidbody) {
-                if (this.controllingObj.rigidbody.applyForce) {
-                    this.controllingObj.rigidbody.applyForce({ x: 0, y: 0 }, { x: 0, y: 10 });
+                if (this.controllingObj.rigidbody.setVelocity) {
+                    this.controllingObj.rigidbody.setVelocity({ x: 0, y: 10 });
                 }
             }
             this.controllingObj = null;

@@ -8,7 +8,6 @@ export module ui.scenes {
 		public bg:Laya.Sprite;
 		public contentBox:Laya.Box;
 		public bottleImg:Laya.Image;
-		public deadline:Laya.Sprite;
 		public toolBox:Laya.Box;
 		public toolImg:Laya.Sprite;
 		public topBox:Laya.Box;

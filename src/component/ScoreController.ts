@@ -1,4 +1,4 @@
-import { SCORE_IMG_URL } from "../define/ConstDefine";
+import { SCORE_IMG_URL } from "../define/UIDefine";
 import Box = Laya.Box;
 import Image = Laya.Image;
 import ResourceManager, { aniNames } from "../manager/ResourceManager";

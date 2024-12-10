@@ -1,14 +1,14 @@
 import ScoreController from "../component/ScoreController";
-import { DESIGN_SCREEN_HEIGHT, FRUITE_IMG_URL } from "../define/ConstDefine";
+import { DESIGN_SCREEN_HEIGHT } from "../define/ConstDefine";
 import ResourceManager from "../manager/ResourceManager";
 import { ui } from "../ui/layaMaxUI";
 import Image = Laya.Image;
+import { FRUITE_IMG_URL } from "../define/UIDefine";
 
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
         this.screenAdapter();
         this.registEvent();
-        this.deadline.zOrder = Number.MAX_SAFE_INTEGER;
         ResourceManager.instance(ResourceManager).loadAnimations()
     }
 

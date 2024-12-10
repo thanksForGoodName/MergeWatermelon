@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":110,
+    "selectedBox":66,
+    "selecteID":9,
     "searchKey":"Scene",
     "props":{"width":750,"sceneColor":"#000000","runtime":"scene/MainScene.ts","mouseThrough":true,"height":1624},
     "nodeParent":-1,
-    "maxID":113,
+    "maxID":114,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -49,13 +49,14 @@
             "props":{"y":812,"x":374,"width":750,"var":"contentBox","pivotY":569,"pivotX":375,"height":1139},
             "nodeParent":2,
             "label":"contentBox",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":66,
             "child":[
                 {
+                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,bottleImg,bottleImg",
                     "props":{"y":16,"x":27,"width":727,"var":"bottleImg","skin":"main/bottle.png","sizeGrid":"60,66,62,69","name":"bottleImg","height":929},
@@ -68,18 +69,20 @@
                     "compId":3,
                     "child":[
                         {
+                            "x":45,
                             "type":"Box",
                             "searchKey":"Box",
                             "props":{"y":0,"x":3},
                             "nodeParent":3,
                             "label":"Box",
-                            "isOpen":false,
+                            "isOpen":true,
                             "isDirectory":true,
                             "isAniNode":true,
                             "hasChild":true,
                             "compId":83,
                             "child":[
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -95,6 +98,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"RigidBody",
                                     "switchAble":true,
                                     "searchKey":"RigidBody",
@@ -110,6 +114,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -125,6 +130,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -140,6 +146,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -155,6 +162,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -170,6 +178,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -185,6 +194,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -200,6 +210,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -215,6 +226,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"Script",
                                     "switchAble":true,
                                     "source":"src/component/BottlePhysicsComp.ts",
@@ -233,65 +245,7 @@
                         }]
                 },
                 {
-                    "type":"Sprite",
-                    "searchKey":"Sprite,deadline",
-                    "props":{"y":115,"x":51.5,"width":651,"var":"deadline","height":14},
-                    "nodeParent":66,
-                    "label":"deadline",
-                    "isOpen":true,
-                    "isDirectory":true,
-                    "isAniNode":true,
-                    "hasChild":true,
-                    "compId":9,
-                    "child":[
-                        {
-                            "type":"BoxCollider",
-                            "switchAble":true,
-                            "searchKey":"BoxCollider",
-                            "removeAble":true,
-                            "props":{"y":0,"x":0,"width":653,"isSensor":true,"height":14},
-                            "nodeParent":9,
-                            "label":"BoxCollider",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":84,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "type":"RigidBody",
-                            "switchAble":true,
-                            "searchKey":"RigidBody",
-                            "removeAble":true,
-                            "props":{"type":"static"},
-                            "nodeParent":9,
-                            "label":"RigidBody",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":85,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "type":"Script",
-                            "switchAble":true,
-                            "source":"src/component/DeadlinePhysicsComp.ts",
-                            "searchKey":"Script,DeadlinePhysicsComp",
-                            "removeAble":true,
-                            "props":{"水果控制器":"@node:81"},
-                            "nodeParent":9,
-                            "label":"DeadlinePhysicsComp",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":86,
-                            "child":[
-                                ]
-                        }]
-                },
-                {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,touchArea",
                     "props":{"y":-242.5,"x":2,"width":750,"name":"touchArea","height":1624},
@@ -307,6 +261,7 @@
                     "$HIDDEN":true
                 },
                 {
+                    "x":30,
                     "type":"Script",
                     "switchAble":true,
                     "source":"src/control/FruitesController.ts",
@@ -393,43 +348,59 @@
                 {
                     "x":30,
                     "type":"Sprite",
-                    "searchKey":"Sprite,crown",
-                    "props":{"y":120.5,"x":61,"width":94,"var":"crown","texture":"score/crown.png","height":80},
+                    "searchKey":"Sprite",
+                    "props":{"y":137,"x":0,"texture":"score/scoreBg.png"},
                     "nodeParent":110,
-                    "label":"crown",
-                    "isOpen":false,
+                    "label":"Sprite",
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
-                    "compId":92,
+                    "compId":113,
                     "child":[
                         {
-                            "type":"Box",
-                            "searchKey":"Box,scoreBox",
-                            "props":{"y":114,"width":87,"var":"scoreBox","pivotY":26,"pivotX":44,"height":51,"centerX":0},
-                            "nodeParent":92,
-                            "label":"scoreBox",
+                            "x":45,
+                            "type":"Sprite",
+                            "searchKey":"Sprite,crown",
+                            "props":{"y":-29,"x":61,"width":94,"var":"crown","texture":"score/crown.png","height":80},
+                            "nodeParent":113,
+                            "label":"crown",
                             "isOpen":true,
                             "isDirectory":true,
                             "isAniNode":true,
                             "hasChild":true,
-                            "compId":91,
+                            "compId":92,
                             "child":[
                                 {
-                                    "type":"Script",
-                                    "switchAble":true,
-                                    "source":"src/component/ScoreController.ts",
-                                    "searchKey":"Script,ScoreController",
-                                    "removeAble":true,
-                                    "props":{},
-                                    "nodeParent":91,
-                                    "label":"ScoreController",
-                                    "isDirectory":false,
+                                    "x":60,
+                                    "type":"Box",
+                                    "searchKey":"Box,scoreBox",
+                                    "props":{"y":114,"width":87,"var":"scoreBox","pivotY":26,"pivotX":44,"height":51,"centerX":0},
+                                    "nodeParent":92,
+                                    "label":"scoreBox",
+                                    "isOpen":true,
+                                    "isDirectory":true,
                                     "isAniNode":true,
-                                    "hasChild":false,
-                                    "compId":100,
+                                    "hasChild":true,
+                                    "compId":91,
                                     "child":[
-                                        ]
+                                        {
+                                            "x":75,
+                                            "type":"Script",
+                                            "switchAble":true,
+                                            "source":"src/component/ScoreController.ts",
+                                            "searchKey":"Script,ScoreController",
+                                            "removeAble":true,
+                                            "props":{},
+                                            "nodeParent":91,
+                                            "label":"ScoreController",
+                                            "isDirectory":false,
+                                            "isAniNode":true,
+                                            "hasChild":false,
+                                            "compId":100,
+                                            "child":[
+                                                ]
+                                        }]
                                 }]
                         }]
                 }]

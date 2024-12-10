@@ -4,7 +4,8 @@ import Loader = Laya.Loader;
 import Handler = Laya.Handler;
 import Animation = Laya.Animation;
 import Sprite = Laya.Sprite;
-import { FRUITES_PRE_URL, LEVEL_ARRAY } from "../define/ConstDefine";
+import { LEVEL_ARRAY } from "../define/ConstDefine";
+import { FRUITES_PRE_URL } from "../define/UIDefine";
 
 export const aniNames = {
     //合成光效
@@ -51,7 +52,6 @@ export default class ResourceManager extends Singleton<ResourceManager> {
     public playAnimationOnce(aniName: string, parent: Sprite, playName: string, pos: { x: number, y: number }) {
         const ani = this.getAnimation(aniName);
         if (!ani) {
-            console.log('动画需要加载');
             return;
         }
         ani.size(80, 80);

@@ -1,7 +1,9 @@
+import { JsonResDef } from "../define/UIDefine";
 import BoxCollider = Laya.BoxCollider;
 import RigidBody = Laya.RigidBody;
 import Script = Laya.Script;
 import Box = Laya.Box;
+import { LEVEL_ARRAY } from "../define/ConstDefine";
 
 export default class BottlePhysicsComp extends Script {
 
@@ -23,4 +25,19 @@ export default class BottlePhysicsComp extends Script {
         }
         this.box.y *= this.box.scaleX;
     }
+
+    onTriggerExit(other: any, self: any, contact: any): void {
+        if (self.label === 'bottleSpace') {
+            Laya.Dialog.open(JsonResDef.overGameDialog)
+        }
+    }
+
+    onTriggerEnter(other: any, self: any, contact: any): void {
+        if (self.label === 'bottleSpace') {
+            if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
+                Laya.stage.event('markAsInBottle', other.owner)
+            }
+        }
+    }
+
 }

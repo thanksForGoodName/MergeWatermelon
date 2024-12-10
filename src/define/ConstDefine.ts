@@ -22,8 +22,6 @@ export const LEVEL_MAP = {
  */
 export const LEVEL_ARRAY = ['kiwifruitePre', 'orangePre', 'watermelonPre', 'megranatePre', 'cucumberPre', 'pepperPre', 'applePre', 'tomatoPre']
 
-export const FRUITES_PRE_URL = 'prefabs/fruites/'
-
 /**
  * 水果的出现几率
  */
@@ -45,5 +43,8 @@ export const SCORE_ARRAY = [2, 4, 8, 16, 32, 64, 128, 256];
 
 export const FRUITE_SPEED = 10;
 
-export const SCORE_IMG_URL = 'score/z';
-export const FRUITE_IMG_URL = 'fruite/';
+export enum zOdersEnum {
+    tool = 1000,
+    fruite = 999,
+    guideLine = 998
+}
