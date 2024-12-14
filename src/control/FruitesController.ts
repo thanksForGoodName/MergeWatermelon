@@ -21,6 +21,7 @@ export default class FruitesController extends Script {
     public nextFruiteLevel: number = null;
 
     private inBottleArr = [];
+    private canCreate = true;
 
 
     onAwake() {
@@ -29,7 +30,6 @@ export default class FruitesController extends Script {
         this.bottleImg = this.box.getChildByName('bottleImg') as Image;
         this.registEvent();
         this.registTouchEvent();
-        this.regularAddFruite();
     }
 
     registEvent() {
@@ -37,19 +37,6 @@ export default class FruitesController extends Script {
         Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
         Laya.stage.on('releaseControllingObj', this, this.releaseControllingObj);
         Laya.stage.on('addMergeGlow', this, this.addMergeGlow);
-    }
-
-    regularAddFruite() {
-        Laya.timer.once(500, this, () => {
-            if (this.nextFruiteLevel === null) {
-                const curFruite = this.randomAFruiteLevel();
-                this.createFruite(curFruite);
-            } else {
-                this.createFruite(this.nextFruiteLevel);
-            }
-            this.nextFruiteLevel = this.randomAFruiteLevel();
-            Laya.stage.event('setNextFruite', this.nextFruiteLevel);
-        })
     }
 
     randomAFruiteLevel(): number {
@@ -64,6 +51,17 @@ export default class FruitesController extends Script {
         }
     }
 
+    readyLoadFruite() {
+        if (this.nextFruiteLevel === null) {
+            const curFruite = this.randomAFruiteLevel();
+            this.createFruite(curFruite);
+        } else {
+            this.createFruite(this.nextFruiteLevel);
+        }
+        this.nextFruiteLevel = this.randomAFruiteLevel();
+        Laya.stage.event('setNextFruite', this.nextFruiteLevel);
+    }
+
     createFruite(level: number, pos?: { x: number, y: number }, needControl = true) {
         const fruitePre = ResourceManager.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level])
         const fruit = fruitePre.create() as Image;
@@ -72,7 +70,7 @@ export default class FruitesController extends Script {
         if (pos) {
             fruit.pos(pos.x, pos.y);
         } else {
-            fruit.x = this.bottleImg.x + (0.5 * this.bottleImg.width);
+            fruit.x = this.touchArea.mouseX;
             fruit.y = this.bottleImg.y - fruit.height
         }
         if (needControl) {
@@ -98,7 +96,10 @@ export default class FruitesController extends Script {
 
     onAreaMouseDown(): void {
         this.isMouseDown = true;
-        this.drawGuideLine();
+        if (!this.controllingObj && this.canCreate) {
+            this.canCreate = false;
+            this.readyLoadFruite();
+        }
     }
 
     drawGuideLine() {
@@ -140,8 +141,15 @@ export default class FruitesController extends Script {
                 }
             }
             this.controllingObj = null;
-            this.regularAddFruite();
         }
+        Laya.timer.once(300, this, this.setCanCreate, [true])
+    }
+
+    /**
+     * 设置是否可以创建水果，防止过快速度地创建水果
+     */
+    setCanCreate(isCan: boolean) {
+        this.canCreate = isCan;
     }
 
     releaseControllingObj(fruite: Sprite) {
@@ -177,6 +185,5 @@ export default class FruitesController extends Script {
         Laya.physicsTimer.scale = 1;
         this.registEvent();
         this.registTouchEvent();
-        this.regularAddFruite();
     }
 }
