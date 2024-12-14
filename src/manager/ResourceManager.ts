@@ -5,7 +5,7 @@ import Handler = Laya.Handler;
 import Animation = Laya.Animation;
 import Sprite = Laya.Sprite;
 import { LEVEL_ARRAY } from "../define/ConstDefine";
-import { FRUITES_PRE_URL } from "../define/UIDefine";
+import { FRUITES_PRE_URL, JSONArr } from "../define/UIDefine";
 
 export const aniNames = {
     //合成光效
@@ -96,5 +96,9 @@ export default class ResourceManager extends Singleton<ResourceManager> {
                 }), null, Loader.PREFAB)
             }
         }
+    }
+
+    public loadJson() {
+        Laya.loader.load(JSONArr)
     }
 }

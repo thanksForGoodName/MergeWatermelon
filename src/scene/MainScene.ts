@@ -10,7 +10,8 @@ export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
         this.screenAdapter();
         this.registEvent();
-        ResourceManager.instance(ResourceManager).loadAnimations()
+        ResourceManager.instance(ResourceManager).loadAnimations();
+        ResourceManager.instance(ResourceManager).loadJson();
     }
 
     registEvent() {

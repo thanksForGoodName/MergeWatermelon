@@ -11,3 +11,7 @@ export const UrlResDef = {
 export const JsonResDef = {
     overGameDialog: 'dialogs/OverGameDialog.json'
 }
+
+export const JSONArr = [
+    'dialogs/OverGameDialog.json'
+]
