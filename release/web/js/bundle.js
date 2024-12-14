@@ -1,6 +1,53 @@
 (function () {
     'use strict';
 
+    var Dialog = Laya.Dialog;
+    var Scene = Laya.Scene;
+    var REG = Laya.ClassUtils.regClass;
+    var ui;
+    (function (ui) {
+        var dialogs;
+        (function (dialogs) {
+            class OverGameDialogUI extends Dialog {
+                constructor() { super(); }
+                createChildren() {
+                    super.createChildren();
+                    this.loadScene("dialogs/OverGameDialog");
+                }
+            }
+            dialogs.OverGameDialogUI = OverGameDialogUI;
+            REG("ui.dialogs.OverGameDialogUI", OverGameDialogUI);
+        })(dialogs = ui.dialogs || (ui.dialogs = {}));
+    })(ui || (ui = {}));
+    (function (ui) {
+        var scenes;
+        (function (scenes) {
+            class MainSceneUI extends Scene {
+                constructor() { super(); }
+                createChildren() {
+                    super.createChildren();
+                    this.loadScene("scenes/MainScene");
+                }
+            }
+            scenes.MainSceneUI = MainSceneUI;
+            REG("ui.scenes.MainSceneUI", MainSceneUI);
+        })(scenes = ui.scenes || (ui.scenes = {}));
+    })(ui || (ui = {}));
+
+    class OverGameDialog extends ui.dialogs.OverGameDialogUI {
+        onAwake() {
+            Laya.stage.event('overGame');
+            this.registBtnEvent();
+        }
+        registBtnEvent() {
+            this.restartBtn.on(Laya.Event.CLICK, this, this.onClickRestartBtn);
+        }
+        onClickRestartBtn() {
+            Laya.stage.event('resetGame');
+            this.close();
+        }
+    }
+
     const FRUITES_PRE_URL = 'prefabs/fruites/';
     const SCORE_IMG_URL = 'score/z';
     const FRUITE_IMG_URL = 'fruite/';
@@ -141,6 +188,15 @@
             const url = `${SCORE_IMG_URL}0.png`;
             this.addNewNumChar(url, 0);
         }
+        resetScore() {
+            this.textImgs = [];
+            this.totalScore = 0;
+            if (this.scoreBox.numChildren > 0) {
+                this.scoreBox.destroyChildren();
+            }
+            const url = `${SCORE_IMG_URL}0.png`;
+            this.addNewNumChar(url, 0);
+        }
         setTextImg(num) {
             ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
             this.totalScore += num;
@@ -166,100 +222,13 @@
         }
     }
 
-    var Scene = Laya.Scene;
-    var REG = Laya.ClassUtils.regClass;
-    var ui;
-    (function (ui) {
-        var scenes;
-        (function (scenes) {
-            class MainSceneUI extends Scene {
-                constructor() { super(); }
-                createChildren() {
-                    super.createChildren();
-                    this.loadScene("scenes/MainScene");
-                }
-            }
-            scenes.MainSceneUI = MainSceneUI;
-            REG("ui.scenes.MainSceneUI", MainSceneUI);
-        })(scenes = ui.scenes || (ui.scenes = {}));
-    })(ui || (ui = {}));
-
-    class MainScene extends ui.scenes.MainSceneUI {
-        onAwake() {
-            this.screenAdapter();
-            this.registEvent();
-            ResourceManager.instance(ResourceManager).loadAnimations();
-        }
-        registEvent() {
-            Laya.stage.on('addScore', this, this.addScore);
-            Laya.stage.on('setNextFruite', this, this.setNextFruite);
-        }
-        screenAdapter() {
-            const scale = Laya.stage.height / DESIGN_SCREEN_HEIGHT >= 1 ? 1 : Laya.stage.height / DESIGN_SCREEN_HEIGHT;
-            this.bg.width = Laya.stage.width;
-            this.bg.height = Laya.stage.height;
-            this.contentBox.scale(scale, scale);
-            this.contentBox.y *= scale;
-            this.contentBox.x = this.bg.width / 2;
-            this.toolBox.scale(scale, scale);
-            this.toolBox.y *= scale;
-            this.toolBox.x = this.bg.width / 2;
-            this.topBox.scale(scale, scale);
-            this.topBox.x *= scale;
-            this.topBox.y *= scale;
-        }
-        addScore(num) {
-            this.scoreBox.getComponent(ScoreController).setTextImg(num);
-        }
-        setNextFruite(level) {
-            const skinUrl = `${FRUITE_IMG_URL}${level + 1}.png`;
-            this.nextImg.skin = skinUrl;
-            this.nextImg.visible = true;
-        }
-    }
-
-    var BoxCollider = Laya.BoxCollider;
-    var Script = Laya.Script;
-    class BottlePhysicsComp extends Script {
-        constructor() {
-            super(...arguments);
-            this.colliderEdges = [];
-        }
-        onAwake() {
-            this.box = this.owner;
-            this.box.scaleY = this.box.scaleX = (this.box.parent.parent).scaleX;
-            const colliders = this.owner.getComponents(BoxCollider);
-            for (let i = 0; i < colliders.length; i++) {
-                if (colliders[i].label === 'bottleSpace') {
-                    this.colliderSpace = colliders[i];
-                }
-                else {
-                    this.colliderEdges.push(colliders[i]);
-                }
-            }
-            this.box.y *= this.box.scaleX;
-        }
-        onTriggerExit(other, self, contact) {
-            if (self.label === 'bottleSpace') {
-                Laya.Dialog.open(JsonResDef.overGameDialog);
-            }
-        }
-        onTriggerEnter(other, self, contact) {
-            if (self.label === 'bottleSpace') {
-                if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
-                    Laya.stage.event('markAsInBottle', other.owner);
-                }
-            }
-        }
-    }
-
     var CircleCollider = Laya.CircleCollider;
     var RigidBody = Laya.RigidBody;
-    var Script$1 = Laya.Script;
+    var Script = Laya.Script;
     var Point = Laya.Point;
     var Handler$1 = Laya.Handler;
     var Ease = Laya.Ease;
-    class FruitePhysicsComp extends Script$1 {
+    class FruitePhysicsComp extends Script {
         onAwake() {
             this.fruite = this.owner;
             this.collider = this.owner.getComponent(CircleCollider);
@@ -318,11 +287,12 @@
         }
     }
 
-    var Script$2 = Laya.Script;
+    var Script$1 = Laya.Script;
     var Image$1 = Laya.Image;
-    class FruitesController extends Script$2 {
+    class FruitesController extends Script$1 {
         constructor() {
             super(...arguments);
+            this.isMouseDown = false;
             this.nextFruiteLevel = null;
             this.inBottleArr = [];
         }
@@ -331,6 +301,7 @@
             this.touchArea = this.box.getChildByName('touchArea');
             this.bottleImg = this.box.getChildByName('bottleImg');
             this.registEvent();
+            this.registTouchEvent();
             ResourceManager.instance(ResourceManager).loadFruitesPre(() => {
                 this.regularAddFruite();
             });
@@ -343,7 +314,7 @@
         }
         regularAddFruite() {
             Laya.timer.once(500, this, () => {
-                if (!this.nextFruiteLevel) {
+                if (this.nextFruiteLevel === null) {
                     const curFruite = this.randomAFruiteLevel();
                     this.createFruite(curFruite);
                 }
@@ -380,7 +351,6 @@
             if (needControl) {
                 this.controllingObj = fruit.getComponent(FruitePhysicsComp);
                 this.controllingObj.rigidbody.gravityScale = 0;
-                this.registFruitesEvent();
             }
             if (this.isMouseDown) {
                 this.drawGuideLine();
@@ -389,7 +359,7 @@
         addMergeGlow(pos) {
             ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.box, 'glow', pos);
         }
-        registFruitesEvent() {
+        registTouchEvent() {
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onAreaMouseMove);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onAreaMouseUp);
@@ -442,11 +412,125 @@
         releaseControllingObj(fruite) {
             if (this.controllingObj && fruite.getComponent(FruitePhysicsComp) === this.controllingObj) {
                 this.controllingObj = null;
-                this.regularAddFruite();
             }
         }
         markAsInBottle(fruit) {
             this.inBottleArr.push(fruit);
+        }
+        overGame() {
+            Laya.stage.offAllCaller(this);
+            Laya.timer.clearAll(this);
+            Laya.physicsTimer.scale = 0;
+            this.isMouseDown = false;
+            if (this.guideLine) {
+                this.guideLine.removeSelf();
+                this.guideLine = null;
+            }
+            this.controllingObj = null;
+        }
+        resetGame() {
+            this.inBottleArr = [];
+            for (let i = this.box.numChildren - 1; i >= 0; i--) {
+                if (this.box.getChildAt(i).name !== 'bottleImg' && this.box.getChildAt(i).name !== 'touchArea') {
+                    this.box.getChildAt(i).removeSelf();
+                }
+            }
+            this.nextFruiteLevel = null;
+            Laya.physicsTimer.scale = 1;
+            this.registEvent();
+            this.registTouchEvent();
+            this.regularAddFruite();
+        }
+    }
+
+    class MainScene extends ui.scenes.MainSceneUI {
+        onAwake() {
+            this.screenAdapter();
+            this.registEvent();
+            ResourceManager.instance(ResourceManager).loadAnimations();
+        }
+        registEvent() {
+            Laya.stage.on('addScore', this, this.addScore);
+            Laya.stage.on('setNextFruite', this, this.setNextFruite);
+            Laya.stage.on('overGame', this, this.overGame);
+            Laya.stage.on('resetGame', this, this.resetGame);
+        }
+        screenAdapter() {
+            const scale = Laya.stage.height / DESIGN_SCREEN_HEIGHT >= 1 ? 1 : Laya.stage.height / DESIGN_SCREEN_HEIGHT;
+            this.bg.width = Laya.stage.width;
+            this.bg.height = Laya.stage.height;
+            this.contentBox.scale(scale, scale);
+            this.contentBox.y *= scale;
+            this.contentBox.x = this.bg.width / 2;
+            this.toolBox.scale(scale, scale);
+            this.toolBox.y *= scale;
+            this.toolBox.x = this.bg.width / 2;
+            this.topBox.scale(scale, scale);
+            this.topBox.x *= scale;
+            this.topBox.y *= scale;
+        }
+        addScore(num) {
+            this.scoreBox.getComponent(ScoreController).setTextImg(num);
+        }
+        setNextFruite(level) {
+            const skinUrl = `${FRUITE_IMG_URL}${level + 1}.png`;
+            this.nextImg.skin = skinUrl;
+            this.nextImg.visible = true;
+        }
+        resetScore() {
+            this.scoreBox.getComponent(ScoreController).resetScore();
+        }
+        resetNextFruite() {
+            this.nextImg.skin = '';
+            this.nextImg.visible = false;
+        }
+        resetFruiteController() {
+            this.contentBox.getComponent(FruitesController).resetGame();
+        }
+        overGame() {
+            this.contentBox.getComponent(FruitesController).overGame();
+        }
+        resetGame() {
+            this.resetFruiteController();
+            this.resetScore();
+            this.resetNextFruite();
+        }
+    }
+
+    var BoxCollider = Laya.BoxCollider;
+    var Script$2 = Laya.Script;
+    class BottlePhysicsComp extends Script$2 {
+        constructor() {
+            super(...arguments);
+            this.colliderEdges = [];
+        }
+        onAwake() {
+            this.box = this.owner;
+            this.box.scaleY = this.box.scaleX = (this.box.parent.parent).scaleX;
+            const colliders = this.owner.getComponents(BoxCollider);
+            for (let i = 0; i < colliders.length; i++) {
+                if (colliders[i].label === 'bottleSpace') {
+                    this.colliderSpace = colliders[i];
+                }
+                else {
+                    this.colliderEdges.push(colliders[i]);
+                }
+            }
+            this.box.y *= this.box.scaleX;
+        }
+        onTriggerExit(other, self, contact) {
+            if (other.label === 'bottleSpace' || self.label === 'bottleSpace') {
+                if (!Laya.Dialog.manager || !Laya.Dialog.manager.getChildByName('OverGameDialog')) {
+                    Laya.Dialog.open(JsonResDef.overGameDialog);
+                }
+            }
+        }
+        onTriggerEnter(other, self, contact) {
+            if (other.label === 'bottleSpace' || self.label === 'bottleSpace') {
+                if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
+                    Laya.stage.event('markAsInBottle', other.owner);
+                }
+            }
         }
     }
 
@@ -455,6 +539,7 @@
         }
         static init() {
             var reg = Laya.ClassUtils.regClass;
+            reg("dialog/OverGameDialog.ts", OverGameDialog);
             reg("scene/MainScene.ts", MainScene);
             reg("component/BottlePhysicsComp.ts", BottlePhysicsComp);
             reg("control/FruitesController.ts", FruitesController);
