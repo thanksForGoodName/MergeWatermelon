@@ -1,4 +1,5 @@
 import GameConfig from "./GameConfig";
+import ResourceManager from "./manager/ResourceManager";
 class Main {
 	constructor() {
 		//根据IDE设置初始化引擎		
@@ -28,7 +29,12 @@ class Main {
 		Laya.AtlasInfoManager.enable("fileconfig.json", Laya.Handler.create(this, this.onConfigLoaded));
 	}
 
-	onConfigLoaded(): void {
+	async onConfigLoaded(): Promise<void> {
+		//加载资源
+		await ResourceManager.instance(ResourceManager).loadAnimationsAsync();
+		await ResourceManager.instance(ResourceManager).loadAtlasAsync();
+		await ResourceManager.instance(ResourceManager).loadFruitesPreAsync();
+		await ResourceManager.instance(ResourceManager).loadJson();
 		//加载IDE指定的场景
 		GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
 	}

@@ -1,7 +1,7 @@
-import { SCORE_IMG_URL } from "../define/UIDefine";
+import { AniNames, SCORE_IMG_URL } from "../define/UIDefine";
 import Box = Laya.Box;
 import Image = Laya.Image;
-import ResourceManager, { aniNames } from "../manager/ResourceManager";
+import ResourceManager from "../manager/ResourceManager";
 const numWidth = 39;
 export default class ScoreController extends Laya.Script {
     private scoreBox: Box;
@@ -24,7 +24,7 @@ export default class ScoreController extends Laya.Script {
     }
 
     public setTextImg(num: number) {
-        ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
+        ResourceManager.instance(ResourceManager).playAnimationOnce(AniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
         this.totalScore += num;
         const numStr = this.totalScore.toString();
         for (let i = 0; i < numStr.length; i++) {

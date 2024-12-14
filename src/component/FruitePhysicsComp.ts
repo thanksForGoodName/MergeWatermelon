@@ -7,7 +7,6 @@ import Box = Laya.Box;
 import Point = Laya.Point;
 import Handler = Laya.Handler;
 import Ease = Laya.Ease;
-import ResourceManager, { aniNames } from "../manager/ResourceManager";
 
 
 export default class FruitePhysicsComp extends Script {

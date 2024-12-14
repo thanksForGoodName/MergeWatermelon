@@ -4,8 +4,8 @@ import Image = Laya.Image;
 import Sprite = Laya.Sprite;
 import Box = Laya.Box;
 import FruitePhysicsComp from "../component/FruitePhysicsComp";
-import ResourceManager, { aniNames } from "../manager/ResourceManager";
-import { UrlResDef } from "../define/UIDefine";
+import ResourceManager from "../manager/ResourceManager";
+import { AniNames, UrlResDef } from "../define/UIDefine";
 
 /**
  * 水果掉落控制器
@@ -23,15 +23,13 @@ export default class FruitesController extends Script {
     private inBottleArr = [];
 
 
-    onAwake(): void {
+    onAwake() {
         this.box = this.owner as Box;
         this.touchArea = this.box.getChildByName('touchArea') as Sprite;
         this.bottleImg = this.box.getChildByName('bottleImg') as Image;
         this.registEvent();
         this.registTouchEvent();
-        ResourceManager.instance(ResourceManager).loadFruitesPre(() => {
-            this.regularAddFruite();
-        });
+        this.regularAddFruite();
     }
 
     registEvent() {
@@ -88,7 +86,7 @@ export default class FruitesController extends Script {
     }
 
     addMergeGlow(pos: { x: number, y: number }) {
-        ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.box, 'glow', pos);
+        ResourceManager.instance(ResourceManager).playAnimationOnce(AniNames.mergeLight, this.box, 'glow', pos);
     }
 
     registTouchEvent() {

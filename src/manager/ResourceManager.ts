@@ -5,12 +5,8 @@ import Handler = Laya.Handler;
 import Animation = Laya.Animation;
 import Sprite = Laya.Sprite;
 import { LEVEL_ARRAY } from "../define/ConstDefine";
-import { FRUITES_PRE_URL, JSONArr } from "../define/UIDefine";
+import { AnimAtlasArr, AniNames, AtlasArr, FRUITES_PRE_URL, JSONArr } from "../define/UIDefine";
 
-export const aniNames = {
-    //合成光效
-    mergeLight: 'light2'
-}
 export default class ResourceManager extends Singleton<ResourceManager> {
     public prefabsMap: Map<string, Prefab>;
     private loadedCount: number = 0;
@@ -19,28 +15,42 @@ export default class ResourceManager extends Singleton<ResourceManager> {
         super();
     }
 
-    public loadAnimations() {
-        for (let name in aniNames) {
+    public async loadAnimationsAsync(): Promise<boolean> {
+        return new Promise((resolve) => {
+            let aniCount = 0;
+            for (let name in AniNames) {
+                //创建动画实例
+                const ani = new Animation();
+                //加载动画图集，加载成功后执行回调方法
+                ani.loadAtlas(`res/atlas/anim/${AniNames[name]}.atlas`, Handler.create(this, () => {
+                    this.aniMap.set(AniNames[name], [ani]);
+                    aniCount++;
+                    if (aniCount === AnimAtlasArr.length) {
+                        resolve(true);
+                    }
+                }));
+            }
+        })
+    }
+
+    /**
+     * 加载某个特定动画
+     * @param aniName 
+     */
+    public async loadSpecificAnimationAsync(aniName: string): Promise<boolean> {
+        return new Promise((resolve) => {
             //创建动画实例
             const ani = new Animation();
             //加载动画图集，加载成功后执行回调方法
-            ani.loadAtlas(`res/atlas/anim/${aniNames[name]}.atlas`, Handler.create(this, () => {
-                this.aniMap.set(aniNames[name], [ani]);
+            ani.loadAtlas(`res/atlas/anim/${aniName}.atlas`, Handler.create(this, () => {
+                if (this.aniMap.get(aniName)) {
+                    this.aniMap.get(aniName).push(ani);
+                } else {
+                    this.aniMap.set(aniName, [ani]);
+                }
+                resolve(true);
             }));
-        }
-    }
-
-    public loadSpecificAnimation(aniName: string) {
-        //创建动画实例
-        const ani = new Animation();
-        //加载动画图集，加载成功后执行回调方法
-        ani.loadAtlas(`res/atlas/anim/${aniName}.atlas`, Handler.create(this, () => {
-            if (this.aniMap.get(aniName)) {
-                this.aniMap.get(aniName).push(ani);
-            } else {
-                this.aniMap.set(aniName, [ani]);
-            }
-        }));
+        })
     }
 
     /**
@@ -66,7 +76,7 @@ export default class ResourceManager extends Singleton<ResourceManager> {
     public getAnimation(aniName: string) {
         const ani = this.aniMap.get(aniName).pop();
         if (!ani) {
-            this.loadSpecificAnimation(aniName);
+            this.loadSpecificAnimationAsync(aniName);
             return;
         }
         return ani;
@@ -79,26 +89,52 @@ export default class ResourceManager extends Singleton<ResourceManager> {
         this.aniMap.get(aniName).push(ani);
     }
 
-    public loadFruitesPre(success: Function) {
-        if (!this.prefabsMap) {
-            this.prefabsMap = new Map<string, Prefab>();
+    public async loadFruitesPreAsync(): Promise<boolean> {
+        return new Promise((resolve) => {
+            if (!this.prefabsMap) {
+                this.prefabsMap = new Map<string, Prefab>();
 
-            for (let i = 0; i < LEVEL_ARRAY.length; i++) {
-                const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[i]}.prefab`;
-                Laya.loader.load(url, Handler.create(this, (prefab: Prefab) => {
-                    this.prefabsMap.set(LEVEL_ARRAY[i], prefab)
-                    this.loadedCount += 1;
-                    if (this.loadedCount === LEVEL_ARRAY.length) {
-                        if (success) {
-                            success();
-                        }
+                if (LEVEL_ARRAY.length > 0) {
+                    for (let i = 0; i < LEVEL_ARRAY.length; i++) {
+                        const url = `${FRUITES_PRE_URL}${LEVEL_ARRAY[i]}.prefab`;
+                        Laya.loader.load(url, Handler.create(this, (prefab: Prefab) => {
+                            this.prefabsMap.set(LEVEL_ARRAY[i], prefab)
+                            this.loadedCount += 1;
+                            if (this.loadedCount === LEVEL_ARRAY.length) {
+                                resolve(true);
+                            }
+                        }), null, Loader.PREFAB)
                     }
-                }), null, Loader.PREFAB)
+                } else {
+                    resolve(true);
+                }
+            } else {
+                resolve(true);
             }
-        }
+        })
     }
 
-    public loadJson() {
-        Laya.loader.load(JSONArr)
+    public async loadJson(): Promise<boolean> {
+        return new Promise((resolve) => {
+            try {
+                Laya.loader.load(JSONArr, Laya.Handler.create(this, () => {
+                    resolve(true);
+                }))
+            } catch {
+                resolve(false);
+            }
+        })
+    }
+
+    public async loadAtlasAsync(): Promise<boolean> {
+        return new Promise((resolve) => {
+            try {
+                Laya.loader.load(AtlasArr, Laya.Handler.create(this, () => {
+                    resolve(true);
+                }))
+            } catch {
+                resolve(false);
+            }
+        })
     }
 }
