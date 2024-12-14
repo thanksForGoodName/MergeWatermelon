@@ -4,6 +4,7 @@ import ResourceManager from "../manager/ResourceManager";
 import { ui } from "../ui/layaMaxUI";
 import Image = Laya.Image;
 import { FRUITE_IMG_URL } from "../define/UIDefine";
+import FruitesController from "../control/FruitesController";
 
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
@@ -15,6 +16,8 @@ export default class MainScene extends ui.scenes.MainSceneUI {
     registEvent() {
         Laya.stage.on('addScore', this, this.addScore);
         Laya.stage.on('setNextFruite', this, this.setNextFruite);
+        Laya.stage.on('overGame', this, this.overGame)
+        Laya.stage.on('resetGame', this, this.resetGame)
     }
 
     /**
@@ -48,5 +51,28 @@ export default class MainScene extends ui.scenes.MainSceneUI {
         const skinUrl = `${FRUITE_IMG_URL}${level + 1}.png`;
         (this.nextImg as Image).skin = skinUrl;
         this.nextImg.visible = true;
+    }
+
+    resetScore() {
+        (this.scoreBox.getComponent(ScoreController) as ScoreController).resetScore();
+    }
+
+    resetNextFruite() {
+        (this.nextImg as Image).skin = '';
+        this.nextImg.visible = false;
+    }
+
+    resetFruiteController() {
+        (this.contentBox.getComponent(FruitesController) as FruitesController).resetGame();
+    }
+
+    overGame() {
+        (this.contentBox.getComponent(FruitesController) as FruitesController).overGame();
+    }
+
+    resetGame() {
+        this.resetFruiteController();
+        this.resetScore();
+        this.resetNextFruite();
     }
 }

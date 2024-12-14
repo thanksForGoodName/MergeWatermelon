@@ -16,10 +16,8 @@ export default class FruitesController extends Script {
     private controllingObj: FruitePhysicsComp;
 
     public bottleImg: Image;
-    public rightArrow: Image;
-    public leftArrow: Image;
     public guideLine: Image;
-    public isMouseDown: boolean;
+    public isMouseDown = false;
     public nextFruiteLevel: number = null;
 
     private inBottleArr = [];
@@ -30,6 +28,7 @@ export default class FruitesController extends Script {
         this.touchArea = this.box.getChildByName('touchArea') as Sprite;
         this.bottleImg = this.box.getChildByName('bottleImg') as Image;
         this.registEvent();
+        this.registTouchEvent();
         ResourceManager.instance(ResourceManager).loadFruitesPre(() => {
             this.regularAddFruite();
         });
@@ -42,10 +41,9 @@ export default class FruitesController extends Script {
         Laya.stage.on('addMergeGlow', this, this.addMergeGlow);
     }
 
-
     regularAddFruite() {
         Laya.timer.once(500, this, () => {
-            if (!this.nextFruiteLevel) {
+            if (this.nextFruiteLevel === null) {
                 const curFruite = this.randomAFruiteLevel();
                 this.createFruite(curFruite);
             } else {
@@ -82,7 +80,6 @@ export default class FruitesController extends Script {
         if (needControl) {
             this.controllingObj = fruit.getComponent(FruitePhysicsComp) as FruitePhysicsComp;
             this.controllingObj.rigidbody.gravityScale = 0;
-            this.registFruitesEvent();
         }
 
         if (this.isMouseDown) {
@@ -94,7 +91,7 @@ export default class FruitesController extends Script {
         ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.box, 'glow', pos);
     }
 
-    registFruitesEvent() {
+    registTouchEvent() {
         Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
         Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onAreaMouseMove);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onAreaMouseUp);
@@ -152,11 +149,36 @@ export default class FruitesController extends Script {
     releaseControllingObj(fruite: Sprite) {
         if (this.controllingObj && fruite.getComponent(FruitePhysicsComp) === this.controllingObj) {
             this.controllingObj = null;
-            this.regularAddFruite();
         }
     }
 
     markAsInBottle(fruit: Image) {
         this.inBottleArr.push(fruit);
+    }
+
+    overGame() {
+        Laya.stage.offAllCaller(this);
+        Laya.timer.clearAll(this);
+        Laya.physicsTimer.scale = 0;
+        this.isMouseDown = false;
+        if (this.guideLine) {
+            this.guideLine.removeSelf();
+            this.guideLine = null;
+        }
+        this.controllingObj = null;
+    }
+
+    resetGame() {
+        this.inBottleArr = [];
+        for (let i = this.box.numChildren - 1; i >= 0; i--) {
+            if (this.box.getChildAt(i).name !== 'bottleImg' && this.box.getChildAt(i).name !== 'touchArea') {
+                this.box.getChildAt(i).removeSelf();
+            }
+        }
+        this.nextFruiteLevel = null;
+        Laya.physicsTimer.scale = 1;
+        this.registEvent();
+        this.registTouchEvent();
+        this.regularAddFruite();
     }
 }

@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":66,
-    "selecteID":9,
+    "selectedBox":2,
+    "selecteID":113,
     "searchKey":"Scene",
     "props":{"width":750,"sceneColor":"#000000","runtime":"scene/MainScene.ts","mouseThrough":true,"height":1624},
     "nodeParent":-1,
@@ -62,27 +62,25 @@
                     "props":{"y":16,"x":27,"width":727,"var":"bottleImg","skin":"main/bottle.png","sizeGrid":"60,66,62,69","name":"bottleImg","height":929},
                     "nodeParent":66,
                     "label":"bottleImg",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":3,
                     "child":[
                         {
-                            "x":45,
                             "type":"Box",
                             "searchKey":"Box",
                             "props":{"y":0,"x":3},
                             "nodeParent":3,
                             "label":"Box",
-                            "isOpen":true,
+                            "isOpen":false,
                             "isDirectory":true,
                             "isAniNode":true,
                             "hasChild":true,
                             "compId":83,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -98,7 +96,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"RigidBody",
                                     "switchAble":true,
                                     "searchKey":"RigidBody",
@@ -114,7 +111,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -130,7 +126,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -146,7 +141,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -162,7 +156,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -178,7 +171,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -194,7 +186,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -210,7 +201,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -226,7 +216,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"Script",
                                     "switchAble":true,
                                     "source":"src/component/BottlePhysicsComp.ts",
@@ -285,13 +274,14 @@
             "props":{"y":1298,"x":376,"width":751,"var":"toolBox","pivotY":113,"pivotX":376,"height":225},
             "nodeParent":2,
             "label":"toolBox",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":108,
             "child":[
                 {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,toolImg",
                     "props":{"y":0,"x":33,"var":"toolImg","texture":"main/toolBox.png"},
@@ -352,27 +342,25 @@
                     "props":{"y":137,"x":0,"texture":"score/scoreBg.png"},
                     "nodeParent":110,
                     "label":"Sprite",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":113,
                     "child":[
                         {
-                            "x":45,
                             "type":"Sprite",
                             "searchKey":"Sprite,crown",
                             "props":{"y":-29,"x":61,"width":94,"var":"crown","texture":"score/crown.png","height":80},
                             "nodeParent":113,
                             "label":"crown",
-                            "isOpen":true,
+                            "isOpen":false,
                             "isDirectory":true,
                             "isAniNode":true,
                             "hasChild":true,
                             "compId":92,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"Box",
                                     "searchKey":"Box,scoreBox",
                                     "props":{"y":114,"width":87,"var":"scoreBox","pivotY":26,"pivotX":44,"height":51,"centerX":0},
@@ -385,7 +373,6 @@
                                     "compId":91,
                                     "child":[
                                         {
-                                            "x":75,
                                             "type":"Script",
                                             "switchAble":true,
                                             "source":"src/component/ScoreController.ts",

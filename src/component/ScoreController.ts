@@ -13,6 +13,16 @@ export default class ScoreController extends Laya.Script {
         this.addNewNumChar(url, 0);
     }
 
+    resetScore() {
+        this.textImgs = [];
+        this.totalScore = 0;
+        if (this.scoreBox.numChildren > 0) {
+            this.scoreBox.destroyChildren();
+        }
+        const url = `${SCORE_IMG_URL}0.png`;
+        this.addNewNumChar(url, 0);
+    }
+
     public setTextImg(num: number) {
         ResourceManager.instance(ResourceManager).playAnimationOnce(aniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
         this.totalScore += num;

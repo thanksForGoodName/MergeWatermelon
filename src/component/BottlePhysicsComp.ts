@@ -27,13 +27,15 @@ export default class BottlePhysicsComp extends Script {
     }
 
     onTriggerExit(other: any, self: any, contact: any): void {
-        if (self.label === 'bottleSpace') {
-            Laya.Dialog.open(JsonResDef.overGameDialog)
+        if (other.label === 'bottleSpace' || self.label === 'bottleSpace') {
+            if (!Laya.Dialog.manager || !Laya.Dialog.manager.getChildByName('OverGameDialog')) {
+                Laya.Dialog.open(JsonResDef.overGameDialog)
+            }
         }
     }
 
     onTriggerEnter(other: any, self: any, contact: any): void {
-        if (self.label === 'bottleSpace') {
+        if (other.label === 'bottleSpace' || self.label === 'bottleSpace') {
             if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
                 Laya.stage.event('markAsInBottle', other.owner)
             }

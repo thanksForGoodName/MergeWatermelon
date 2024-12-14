@@ -3,6 +3,18 @@ import View=Laya.View;
 import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
 var REG: Function = Laya.ClassUtils.regClass;
+export module ui.dialogs {
+    export class OverGameDialogUI extends Dialog {
+		public bg:Laya.Panel;
+		public restartBtn:Laya.Image;
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.loadScene("dialogs/OverGameDialog");
+        }
+    }
+    REG("ui.dialogs.OverGameDialogUI",OverGameDialogUI);
+}
 export module ui.scenes {
     export class MainSceneUI extends Scene {
 		public bg:Laya.Sprite;
