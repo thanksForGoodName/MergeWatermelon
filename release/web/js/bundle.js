@@ -57,6 +57,9 @@
     const JsonResDef = {
         overGameDialog: 'dialogs/OverGameDialog.json'
     };
+    const JSONArr = [
+        'dialogs/OverGameDialog.json'
+    ];
 
     class Singleton {
         static instance(c) {
@@ -172,6 +175,9 @@
                     }), null, Loader.PREFAB);
                 }
             }
+        }
+        loadJson() {
+            Laya.loader.load(JSONArr);
         }
     }
 
@@ -448,6 +454,7 @@
             this.screenAdapter();
             this.registEvent();
             ResourceManager.instance(ResourceManager).loadAnimations();
+            ResourceManager.instance(ResourceManager).loadJson();
         }
         registEvent() {
             Laya.stage.on('addScore', this, this.addScore);
