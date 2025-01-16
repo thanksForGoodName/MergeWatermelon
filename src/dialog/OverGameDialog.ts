@@ -12,7 +12,7 @@ export default class OverGameDialog extends ui.dialogs.OverGameDialogUI {
     }
 
     onClickRestartBtn() {
-        Laya.stage.event(EventDef.OVER_GAME);
+        Laya.stage.event(EventDef.RESET_GAME);
         this.close();
     }
 }

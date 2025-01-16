@@ -241,7 +241,7 @@
             this.restartBtn.on(Laya.Event.CLICK, this, this.onClickRestartBtn);
         }
         onClickRestartBtn() {
-            Laya.stage.event(EventDef.OVER_GAME);
+            Laya.stage.event(EventDef.RESET_GAME);
             this.close();
         }
     }
