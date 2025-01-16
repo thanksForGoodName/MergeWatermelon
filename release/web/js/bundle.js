@@ -254,10 +254,36 @@
         'res/atlas/overGame.atlas',
     ];
     const AniNames = {
-        mergeLight: 'light2'
+        mergeLight: 'light2',
+        bloom_1: 'bloom_1',
+        bloom_2: 'bloom_2',
+        bloom_3: 'bloom_3',
+        bloom_4: 'bloom_4',
+        bloom_5: 'bloom_5',
+        bloom_6: 'bloom_6',
+        bloom_7: 'bloom_7',
+        bloom_8: 'bloom_8',
+    };
+    const AniSize = {
+        bloom_1: 161,
+        bloom_2: 183,
+        bloom_3: 183,
+        bloom_4: 246,
+        bloom_5: 340,
+        bloom_6: 340,
+        bloom_7: 431,
+        bloom_8: 431,
     };
     const AnimAtlasArr = [
         'res/atlas/anim/light2.atlas',
+        'res/atlas/anim/bloom_1.atlas',
+        'res/atlas/anim/bloom_2.atlas',
+        'res/atlas/anim/bloom_3.atlas',
+        'res/atlas/anim/bloom_4.atlas',
+        'res/atlas/anim/bloom_5.atlas',
+        'res/atlas/anim/bloom_6.atlas',
+        'res/atlas/anim/bloom_7.atlas',
+        'res/atlas/anim/bloom_8.atlas',
     ];
 
     class Singleton {
@@ -343,18 +369,27 @@
                 });
             });
         }
-        playAnimationOnce(aniName, parent, playName, pos) {
-            const ani = this.getAnimation(aniName);
+        playAnimationOnce(param) {
+            const ani = this.getAnimation(param.aniName);
             if (!ani) {
                 return;
             }
+            if (param.size) {
+                ani.size(param.size.width, param.size.height);
+            }
             ani.size(80, 80);
+            if (param.scale) {
+                ani.scale(param.scale.scaleX, param.scale.scaleY);
+            }
+            if (param.pivot) {
+                ani.pivot(param.pivot.pivotX, param.pivot.pivotY);
+            }
             ani.scale(2, 2);
-            ani.pos(pos.x, pos.y);
+            ani.pos(param.pos.x, param.pos.y);
             ani.zOrder = Number.MAX_SAFE_INTEGER;
-            parent.addChild(ani);
+            param.parent.addChild(ani);
             ani.play(0, false);
-            ani.on(Laya.Event.COMPLETE, this, this.recoverAnimation, [ani, aniName]);
+            ani.on(Laya.Event.COMPLETE, this, this.recoverAnimation, [ani, param.aniName]);
         }
         getAnimation(aniName) {
             const ani = this.aniMap.get(aniName).pop();
@@ -449,7 +484,14 @@
             this.addNewNumChar(url, 0);
         }
         setTextImg(num) {
-            ResourceManager.instance(ResourceManager).playAnimationOnce(AniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
+            ResourceManager.instance(ResourceManager).playAnimationOnce({
+                aniName: AniNames.mergeLight,
+                parent: this.scoreBox,
+                playName: 'glow',
+                pos: { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 },
+                size: { width: 80, height: 80 },
+                scale: { scaleX: 2, scaleY: 2 }
+            });
             this.totalScore += num;
             const numStr = this.totalScore.toString();
             for (let i = 0; i < numStr.length; i++) {
@@ -520,7 +562,7 @@
             }
             const pos = this.calculateTriggerPoint({ x: other.x, y: other.y }, { x: self.x, y: self.y }, radius);
             const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
-            Laya.stage.event('addMergeGlow', { x: pos.x - 80, y: pos.y - 80 });
+            Laya.stage.event('addBloomAni', [level, { x: pos.x, y: pos.y }]);
             Laya.Tween.to(other, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler$1.create(this, () => {
                 other.removeSelf();
                 Laya.stage.event('createFruite', [level, pos, false]);
@@ -537,6 +579,17 @@
             return pos;
         }
     }
+
+    const EventDef = {
+        CREATE_FRUITE: 'CREATE_FRUITE',
+        MARK_IN_BOTTLE: 'MARK_IN_BOTTLE',
+        RELEASE_CONTROLING_OBJ: 'RELEASE_CONTROLING_OBJ',
+        ADD_BLOOM_ANI: 'ADD_BLOOM_ANI',
+        ADD_SCORE: 'ADD_SCORE',
+        SET_NEXT_FUITE: 'SET_NEXT_FUITE',
+        OVER_GAME: 'OVER_GAME',
+        RESET_GAME: 'RESET_GAME'
+    };
 
     var Script$1 = Laya.Script;
     var Image$1 = Laya.Image;
@@ -556,10 +609,10 @@
             this.registTouchEvent();
         }
         registEvent() {
-            Laya.stage.on('createFruite', this, this.createFruite);
-            Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
-            Laya.stage.on('releaseControllingObj', this, this.releaseControllingObj);
-            Laya.stage.on('addMergeGlow', this, this.addMergeGlow);
+            Laya.stage.on(EventDef.CREATE_FRUITE, this, this.createFruite);
+            Laya.stage.on(EventDef.MARK_IN_BOTTLE, this, this.markAsInBottle);
+            Laya.stage.on(EventDef.RELEASE_CONTROLING_OBJ, this, this.releaseControllingObj);
+            Laya.stage.on(EventDef.ADD_BLOOM_ANI, this, this.addBloomAni);
         }
         randomAFruiteLevel() {
             const rate = Math.random();
@@ -603,8 +656,15 @@
                 this.drawGuideLine();
             }
         }
-        addMergeGlow(pos) {
-            ResourceManager.instance(ResourceManager).playAnimationOnce(AniNames.mergeLight, this.box, 'glow', pos);
+        addBloomAni(level, pos) {
+            ResourceManager.instance(ResourceManager).playAnimationOnce({
+                aniName: `bloom_${level}`,
+                playName: 'bloom',
+                parent: this.box,
+                pos,
+                size: { width: AniSize[`bloom_${level}`], height: AniSize[`bloom_${level}`] },
+                pivot: { pivotX: AniSize[`bloom_${level}`] / 2, pivotY: AniSize[`bloom_${level}`] / 2 }
+            });
         }
         registTouchEvent() {
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
@@ -701,10 +761,10 @@
             this.registEvent();
         }
         registEvent() {
-            Laya.stage.on('addScore', this, this.addScore);
-            Laya.stage.on('setNextFruite', this, this.setNextFruite);
-            Laya.stage.on('overGame', this, this.overGame);
-            Laya.stage.on('resetGame', this, this.resetGame);
+            Laya.stage.on(EventDef.ADD_SCORE, this, this.addScore);
+            Laya.stage.on(EventDef.SET_NEXT_FUITE, this, this.setNextFruite);
+            Laya.stage.on(EventDef.OVER_GAME, this, this.overGame);
+            Laya.stage.on(EventDef.RESET_GAME, this, this.resetGame);
         }
         screenAdapter() {
             const scale = Laya.stage.height / DESIGN_SCREEN_HEIGHT >= 1 ? 1 : Laya.stage.height / DESIGN_SCREEN_HEIGHT;
