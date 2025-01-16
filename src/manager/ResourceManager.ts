@@ -59,18 +59,38 @@ export default class ResourceManager extends Singleton<ResourceManager> {
      * @param parent 
      * @param playName 
      */
-    public playAnimationOnce(aniName: string, parent: Sprite, playName: string, pos: { x: number, y: number }) {
-        const ani = this.getAnimation(aniName);
+    public playAnimationOnce(param: {
+        aniName: string,
+        parent: Sprite,
+        playName: string,
+        pos: { x: number, y: number },
+        size?: { width: number, height: number },
+        scale?: { scaleX: number, scaleY: number },
+        pivot?: { pivotX: number, pivotY: number }
+    }) {
+        const ani = this.getAnimation(param.aniName);
         if (!ani) {
             return;
         }
+        if (param.size) {
+            ani.size(param.size.width, param.size.height);
+        }
         ani.size(80, 80);
-        ani.scale(2, 2)
-        ani.pos(pos.x, pos.y);
+
+        if (param.scale) {
+            ani.scale(param.scale.scaleX, param.scale.scaleY);
+        }
+
+        if (param.pivot) {
+            ani.pivot(param.pivot.pivotX, param.pivot.pivotY);
+        }
+        ani.scale(2, 2);
+
+        ani.pos(param.pos.x, param.pos.y);
         ani.zOrder = Number.MAX_SAFE_INTEGER;
-        parent.addChild(ani);
+        param.parent.addChild(ani);
         ani.play(0, false);
-        ani.on(Laya.Event.COMPLETE, this, this.recoverAnimation, [ani, aniName])
+        ani.on(Laya.Event.COMPLETE, this, this.recoverAnimation, [ani, param.aniName])
     }
 
     public getAnimation(aniName: string) {

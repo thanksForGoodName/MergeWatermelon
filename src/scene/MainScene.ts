@@ -5,6 +5,7 @@ import { ui } from "../ui/layaMaxUI";
 import Image = Laya.Image;
 import { FRUITE_IMG_URL } from "../define/UIDefine";
 import FruitesController from "../control/FruitesController";
+import { EventDef } from "../define/EventDefine";
 
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
@@ -13,10 +14,10 @@ export default class MainScene extends ui.scenes.MainSceneUI {
     }
 
     registEvent() {
-        Laya.stage.on('addScore', this, this.addScore);
-        Laya.stage.on('setNextFruite', this, this.setNextFruite);
-        Laya.stage.on('overGame', this, this.overGame)
-        Laya.stage.on('resetGame', this, this.resetGame)
+        Laya.stage.on(EventDef.ADD_SCORE, this, this.addScore);
+        Laya.stage.on(EventDef.SET_NEXT_FUITE, this, this.setNextFruite);
+        Laya.stage.on(EventDef.OVER_GAME, this, this.overGame)
+        Laya.stage.on(EventDef.RESET_GAME, this, this.resetGame)
     }
 
     /**

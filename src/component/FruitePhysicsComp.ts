@@ -59,7 +59,7 @@ export default class FruitePhysicsComp extends Script {
         }
         const pos = this.calculateTriggerPoint({ x: other.x, y: other.y }, { x: self.x, y: self.y }, radius);
         const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
-        Laya.stage.event('addMergeGlow', { x: pos.x - 80, y: pos.y - 80 });
+        Laya.stage.event('addBloomAni', [level, { x: pos.x, y: pos.y }]);
 
         Laya.Tween.to(other, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler.create(this, () => {
             other.removeSelf();

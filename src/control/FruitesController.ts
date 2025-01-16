@@ -5,7 +5,8 @@ import Sprite = Laya.Sprite;
 import Box = Laya.Box;
 import FruitePhysicsComp from "../component/FruitePhysicsComp";
 import ResourceManager from "../manager/ResourceManager";
-import { AniNames, UrlResDef } from "../define/UIDefine";
+import { AniSize, UrlResDef } from "../define/UIDefine";
+import { EventDef } from "../define/EventDefine";
 
 /**
  * 水果掉落控制器
@@ -33,10 +34,10 @@ export default class FruitesController extends Script {
     }
 
     registEvent() {
-        Laya.stage.on('createFruite', this, this.createFruite);
-        Laya.stage.on('markAsInBottle', this, this.markAsInBottle);
-        Laya.stage.on('releaseControllingObj', this, this.releaseControllingObj);
-        Laya.stage.on('addMergeGlow', this, this.addMergeGlow);
+        Laya.stage.on(EventDef.CREATE_FRUITE, this, this.createFruite);
+        Laya.stage.on(EventDef.MARK_IN_BOTTLE, this, this.markAsInBottle);
+        Laya.stage.on(EventDef.RELEASE_CONTROLING_OBJ, this, this.releaseControllingObj);
+        Laya.stage.on(EventDef.ADD_BLOOM_ANI, this, this.addBloomAni);
     }
 
     randomAFruiteLevel(): number {
@@ -83,8 +84,15 @@ export default class FruitesController extends Script {
         }
     }
 
-    addMergeGlow(pos: { x: number, y: number }) {
-        ResourceManager.instance(ResourceManager).playAnimationOnce(AniNames.mergeLight, this.box, 'glow', pos);
+    addBloomAni(level: number, pos: { x: number, y: number }) {
+        ResourceManager.instance(ResourceManager).playAnimationOnce({
+            aniName: `bloom_${level}`,
+            playName: 'bloom',
+            parent: this.box,
+            pos,
+            size: { width: AniSize[`bloom_${level}`], height: AniSize[`bloom_${level}`] },
+            pivot: { pivotX: AniSize[`bloom_${level}`] / 2, pivotY: AniSize[`bloom_${level}`] / 2 }
+        });
     }
 
     registTouchEvent() {

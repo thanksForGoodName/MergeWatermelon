@@ -24,7 +24,14 @@ export default class ScoreController extends Laya.Script {
     }
 
     public setTextImg(num: number) {
-        ResourceManager.instance(ResourceManager).playAnimationOnce(AniNames.mergeLight, this.scoreBox, 'glow', { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 });
+        ResourceManager.instance(ResourceManager).playAnimationOnce({
+            aniName: AniNames.mergeLight,
+            parent: this.scoreBox,
+            playName: 'glow',
+            pos: { x: this.scoreBox.pivotX - 80, y: this.scoreBox.pivotY - 80 },
+            size: { width: 80, height: 80 },
+            scale: { scaleX: 2, scaleY: 2 }
+        });
         this.totalScore += num;
         const numStr = this.totalScore.toString();
         for (let i = 0; i < numStr.length; i++) {
