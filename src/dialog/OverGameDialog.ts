@@ -1,8 +1,9 @@
+import { EventDef } from "../define/EventDefine";
 import { ui } from "../ui/layaMaxUI";
 
 export default class OverGameDialog extends ui.dialogs.OverGameDialogUI {
     onAwake(): void {
-        Laya.stage.event('overGame')
+        Laya.stage.event(EventDef.OVER_GAME)
         this.registBtnEvent();
     }
 
@@ -11,7 +12,7 @@ export default class OverGameDialog extends ui.dialogs.OverGameDialogUI {
     }
 
     onClickRestartBtn() {
-        Laya.stage.event('resetGame');
+        Laya.stage.event(EventDef.OVER_GAME);
         this.close();
     }
 }

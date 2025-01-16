@@ -60,7 +60,7 @@ export default class FruitesController extends Script {
             this.createFruite(this.nextFruiteLevel);
         }
         this.nextFruiteLevel = this.randomAFruiteLevel();
-        Laya.stage.event('setNextFruite', this.nextFruiteLevel);
+        Laya.stage.event(EventDef.SET_NEXT_FUITE, this.nextFruiteLevel);
     }
 
     createFruite(level: number, pos?: { x: number, y: number }, needControl = true) {

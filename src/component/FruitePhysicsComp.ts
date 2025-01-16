@@ -7,6 +7,7 @@ import Box = Laya.Box;
 import Point = Laya.Point;
 import Handler = Laya.Handler;
 import Ease = Laya.Ease;
+import { EventDef } from "../define/EventDefine";
 
 
 export default class FruitePhysicsComp extends Script {
@@ -39,8 +40,8 @@ export default class FruitePhysicsComp extends Script {
             if (!other.owner || !self.owner) {
                 return;
             }
-            Laya.stage.event('releaseControllingObj', self.owner);
-            Laya.stage.event('releaseControllingObj', other.owner);
+            Laya.stage.event(EventDef.RELEASE_CONTROLING_OBJ, self.owner);
+            Laya.stage.event(EventDef.RELEASE_CONTROLING_OBJ, other.owner);
             const otherFruite = other.owner as Image;
             const selfFruite = self.owner as Image;
             const label = other.label.slice(0, other.label.length);
@@ -59,12 +60,12 @@ export default class FruitePhysicsComp extends Script {
         }
         const pos = this.calculateTriggerPoint({ x: other.x, y: other.y }, { x: self.x, y: self.y }, radius);
         const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
-        Laya.stage.event('addBloomAni', [level, { x: pos.x, y: pos.y }]);
+        Laya.stage.event(EventDef.ADD_BLOOM_ANI, [level, { x: pos.x, y: pos.y }]);
 
         Laya.Tween.to(other, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler.create(this, () => {
             other.removeSelf();
-            Laya.stage.event('createFruite', [level, pos, false]);
-            Laya.stage.event('addScore', SCORE_ARRAY[level]);
+            Laya.stage.event(EventDef.CREATE_FRUITE, [level, pos, false]);
+            Laya.stage.event(EventDef.ADD_SCORE, SCORE_ARRAY[level]);
         }))
         Laya.Tween.to(self, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler.create(this, () => {
             self.removeSelf();

@@ -188,6 +188,17 @@
         return (mod && mod.__esModule) ? mod : { default: mod };
     }
 
+    const EventDef = {
+        CREATE_FRUITE: 'CREATE_FRUITE',
+        MARK_IN_BOTTLE: 'MARK_IN_BOTTLE',
+        RELEASE_CONTROLING_OBJ: 'RELEASE_CONTROLING_OBJ',
+        ADD_BLOOM_ANI: 'ADD_BLOOM_ANI',
+        ADD_SCORE: 'ADD_SCORE',
+        SET_NEXT_FUITE: 'SET_NEXT_FUITE',
+        OVER_GAME: 'OVER_GAME',
+        RESET_GAME: 'RESET_GAME'
+    };
+
     var Dialog = Laya.Dialog;
     var Scene = Laya.Scene;
     var REG = Laya.ClassUtils.regClass;
@@ -223,14 +234,14 @@
 
     class OverGameDialog extends ui.dialogs.OverGameDialogUI {
         onAwake() {
-            Laya.stage.event('overGame');
+            Laya.stage.event(EventDef.OVER_GAME);
             this.registBtnEvent();
         }
         registBtnEvent() {
             this.restartBtn.on(Laya.Event.CLICK, this, this.onClickRestartBtn);
         }
         onClickRestartBtn() {
-            Laya.stage.event('resetGame');
+            Laya.stage.event(EventDef.OVER_GAME);
             this.close();
         }
     }
@@ -543,8 +554,8 @@
                 if (!other.owner || !self.owner) {
                     return;
                 }
-                Laya.stage.event('releaseControllingObj', self.owner);
-                Laya.stage.event('releaseControllingObj', other.owner);
+                Laya.stage.event(EventDef.RELEASE_CONTROLING_OBJ, self.owner);
+                Laya.stage.event(EventDef.RELEASE_CONTROLING_OBJ, other.owner);
                 const otherFruite = other.owner;
                 const selfFruite = self.owner;
                 const label = other.label.slice(0, other.label.length);
@@ -562,11 +573,11 @@
             }
             const pos = this.calculateTriggerPoint({ x: other.x, y: other.y }, { x: self.x, y: self.y }, radius);
             const level = (LEVEL_MAP[label] + 1) < LEVEL_ARRAY.length ? LEVEL_MAP[label] + 1 : LEVEL_MAP[label];
-            Laya.stage.event('addBloomAni', [level, { x: pos.x, y: pos.y }]);
+            Laya.stage.event(EventDef.ADD_BLOOM_ANI, [level, { x: pos.x, y: pos.y }]);
             Laya.Tween.to(other, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler$1.create(this, () => {
                 other.removeSelf();
-                Laya.stage.event('createFruite', [level, pos, false]);
-                Laya.stage.event('addScore', SCORE_ARRAY[level]);
+                Laya.stage.event(EventDef.CREATE_FRUITE, [level, pos, false]);
+                Laya.stage.event(EventDef.ADD_SCORE, SCORE_ARRAY[level]);
             }));
             Laya.Tween.to(self, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler$1.create(this, () => {
                 self.removeSelf();
@@ -579,17 +590,6 @@
             return pos;
         }
     }
-
-    const EventDef = {
-        CREATE_FRUITE: 'CREATE_FRUITE',
-        MARK_IN_BOTTLE: 'MARK_IN_BOTTLE',
-        RELEASE_CONTROLING_OBJ: 'RELEASE_CONTROLING_OBJ',
-        ADD_BLOOM_ANI: 'ADD_BLOOM_ANI',
-        ADD_SCORE: 'ADD_SCORE',
-        SET_NEXT_FUITE: 'SET_NEXT_FUITE',
-        OVER_GAME: 'OVER_GAME',
-        RESET_GAME: 'RESET_GAME'
-    };
 
     var Script$1 = Laya.Script;
     var Image$1 = Laya.Image;
@@ -634,7 +634,7 @@
                 this.createFruite(this.nextFruiteLevel);
             }
             this.nextFruiteLevel = this.randomAFruiteLevel();
-            Laya.stage.event('setNextFruite', this.nextFruiteLevel);
+            Laya.stage.event(EventDef.SET_NEXT_FUITE, this.nextFruiteLevel);
         }
         createFruite(level, pos, needControl = true) {
             const fruitePre = ResourceManager.instance(ResourceManager).prefabsMap.get(LEVEL_ARRAY[level]);
@@ -839,7 +839,7 @@
         onTriggerEnter(other, self, contact) {
             if (other.label === 'bottleSpace' || self.label === 'bottleSpace') {
                 if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
-                    Laya.stage.event('markAsInBottle', other.owner);
+                    Laya.stage.event(EventDef.MARK_IN_BOTTLE, other.owner);
                 }
             }
         }

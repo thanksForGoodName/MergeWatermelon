@@ -4,6 +4,7 @@ import RigidBody = Laya.RigidBody;
 import Script = Laya.Script;
 import Box = Laya.Box;
 import { LEVEL_ARRAY } from "../define/ConstDefine";
+import { EventDef } from "../define/EventDefine";
 
 export default class BottlePhysicsComp extends Script {
 
@@ -37,7 +38,7 @@ export default class BottlePhysicsComp extends Script {
     onTriggerEnter(other: any, self: any, contact: any): void {
         if (other.label === 'bottleSpace' || self.label === 'bottleSpace') {
             if (LEVEL_ARRAY.indexOf(other.label) !== -1) {
-                Laya.stage.event('markAsInBottle', other.owner)
+                Laya.stage.event(EventDef.MARK_IN_BOTTLE, other.owner)
             }
         }
     }
