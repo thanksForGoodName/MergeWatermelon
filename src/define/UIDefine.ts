@@ -3,6 +3,7 @@ export const FRUITES_PRE_URL = 'prefabs/fruites/'
 
 export const SCORE_IMG_URL = 'score/z';
 export const FRUITE_IMG_URL = 'fruite/';
+export const PROP_IMG_URL = 'prop/'
 
 export const UrlResDef = {
     guideLine: 'main/redline.png',
@@ -24,6 +25,7 @@ export const AtlasArr = [
     'res/atlas/main.atlas',
     'res/atlas/score.atlas',
     'res/atlas/overGame.atlas',
+    'res/atlas/prop.atlas'
 ]
 
 //动画名称
@@ -38,9 +40,10 @@ export const AniNames = {
     bloom_6: 'bloom_6',
     bloom_7: 'bloom_7',
     bloom_8: 'bloom_8',
+    boom: 'boom',
 }
 
-//动画名称
+//动画尺寸
 export const AniSize = {
     bloom_1: 161,
     bloom_2: 183,
@@ -50,6 +53,7 @@ export const AniSize = {
     bloom_6: 340,
     bloom_7: 431,
     bloom_8: 431,
+    boom: 359
 }
 
 /**
@@ -65,4 +69,10 @@ export const AnimAtlasArr = [
     'res/atlas/anim/bloom_6.atlas',
     'res/atlas/anim/bloom_7.atlas',
     'res/atlas/anim/bloom_8.atlas',
+    'res/atlas/anim/boom.atlas',
 ]
+
+export const propIconSize = {
+    boom: { width: 146, height: 184 },
+    magicBall: { width: 143, height: 146 }
+}

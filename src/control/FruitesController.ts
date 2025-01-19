@@ -96,10 +96,10 @@ export default class FruitesController extends Script {
     }
 
     registTouchEvent() {
-        Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
-        Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onAreaMouseMove);
-        Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onAreaMouseUp);
-        Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.onAreaMouseUp);
+        this.touchArea.on(Laya.Event.MOUSE_DOWN, this, this.onAreaMouseDown);
+        this.touchArea.on(Laya.Event.MOUSE_MOVE, this, this.onAreaMouseMove);
+        this.touchArea.on(Laya.Event.MOUSE_UP, this, this.onAreaMouseUp);
+        this.touchArea.on(Laya.Event.MOUSE_OUT, this, this.onAreaMouseUp);
     }
 
     onAreaMouseDown(): void {

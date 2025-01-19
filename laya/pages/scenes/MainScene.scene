@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":103,
+    "selectedBox":66,
+    "selecteID":88,
     "searchKey":"Scene",
     "props":{"width":750,"sceneColor":"#000000","runtime":"scene/MainScene.ts","mouseThrough":true,"height":1624},
     "nodeParent":-1,
-    "maxID":114,
+    "maxID":118,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -32,7 +32,7 @@
             "x":15,
             "type":"Box",
             "searchKey":"Box,contentBox",
-            "props":{"y":812,"x":374,"width":750,"var":"contentBox","pivotY":569,"pivotX":375,"height":1139},
+            "props":{"y":812,"x":374,"width":750,"var":"contentBox","pivotY":569,"pivotX":375,"height":925},
             "nodeParent":2,
             "label":"contentBox",
             "isOpen":true,
@@ -222,8 +222,8 @@
                 {
                     "x":30,
                     "type":"Sprite",
-                    "searchKey":"Sprite,touchArea",
-                    "props":{"y":-242.5,"x":2,"width":750,"name":"touchArea","height":1624},
+                    "searchKey":"Sprite,touchArea,touchArea",
+                    "props":{"zOrder":1000000,"y":-242,"x":2,"width":750,"var":"touchArea","name":"touchArea","height":1175},
                     "nodeParent":66,
                     "label":"touchArea",
                     "isOpen":true,
@@ -246,6 +246,7 @@
                     "nodeParent":66,
                     "label":"FruitesController",
                     "isDirectory":false,
+                    "isClose":true,
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":81,
@@ -256,27 +257,81 @@
         {
             "x":15,
             "type":"Box",
-            "searchKey":"Box,toolBox",
-            "props":{"y":1298,"x":376,"width":751,"var":"toolBox","pivotY":113,"pivotX":376,"height":225},
+            "searchKey":"Box,propBox",
+            "props":{"y":1298,"x":376,"width":751,"var":"propBox","pivotY":113,"pivotX":376,"height":225},
             "nodeParent":2,
-            "label":"toolBox",
-            "isOpen":true,
+            "label":"propBox",
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":108,
             "child":[
                 {
-                    "x":30,
                     "type":"Sprite",
-                    "searchKey":"Sprite,toolImg",
-                    "props":{"y":0,"x":33,"var":"toolImg","texture":"main/toolBox.png"},
+                    "searchKey":"Sprite,propBg",
+                    "props":{"y":0,"x":33,"width":685,"var":"propBg","texture":"main/toolBox.png","height":225},
                     "nodeParent":108,
-                    "label":"toolImg",
+                    "label":"propBg",
                     "isDirectory":false,
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":109,
+                    "child":[
+                        ]
+                },
+                {
+                    "type":"Box",
+                    "searchKey":"Box,space_0",
+                    "props":{"y":0,"x":39,"width":222,"name":"space_0","height":215},
+                    "nodeParent":108,
+                    "label":"space_0",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":114,
+                    "child":[
+                        ]
+                },
+                {
+                    "type":"Box",
+                    "searchKey":"Box,space_1",
+                    "props":{"y":0,"x":261,"width":222,"name":"space_1","height":215},
+                    "nodeParent":108,
+                    "label":"space_1",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":115,
+                    "child":[
+                        ]
+                },
+                {
+                    "type":"Box",
+                    "searchKey":"Box,space_2",
+                    "props":{"y":0,"x":483,"width":222,"name":"space_2","height":215},
+                    "nodeParent":108,
+                    "label":"space_2",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":116,
+                    "child":[
+                        ]
+                },
+                {
+                    "type":"Script",
+                    "switchAble":true,
+                    "source":"src/component/PropBoxController.ts",
+                    "searchKey":"Script,PropBoxController",
+                    "removeAble":true,
+                    "props":{},
+                    "nodeParent":108,
+                    "label":"PropBoxController",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":117,
                     "child":[
                         ]
                 }]
@@ -288,14 +343,13 @@
             "props":{"y":184,"x":386,"width":751,"var":"topBox","pivotY":184,"pivotX":386,"height":321},
             "nodeParent":2,
             "label":"topBox",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":110,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,nextImg",
                     "props":{"y":194,"x":619,"visible":false,"var":"nextImg","skin":"fruite/1.png"},
@@ -322,7 +376,6 @@
                         }]
                 },
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite",
                     "props":{"y":137,"x":0,"texture":"score/scoreBg.png"},

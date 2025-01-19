@@ -20,8 +20,9 @@ export module ui.scenes {
 		public bg:Laya.Sprite;
 		public contentBox:Laya.Box;
 		public bottleImg:Laya.Image;
-		public toolBox:Laya.Box;
-		public toolImg:Laya.Sprite;
+		public touchArea:Laya.Sprite;
+		public propBox:Laya.Box;
+		public propBg:Laya.Sprite;
 		public topBox:Laya.Box;
 		public nextImg:Laya.Image;
 		public crown:Laya.Sprite;

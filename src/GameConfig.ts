@@ -3,6 +3,7 @@ import OverGameDialog from "./dialog/OverGameDialog"
 import MainScene from "./scene/MainScene"
 import BottlePhysicsComp from "./component/BottlePhysicsComp"
 import FruitesController from "./control/FruitesController"
+import PropBoxController from "./component/PropBoxController"
 import ScoreController from "./component/ScoreController"
 import FruitePhysicsComp from "./component/FruitePhysicsComp"
 /*
@@ -28,6 +29,7 @@ export default class GameConfig{
         reg("scene/MainScene.ts",MainScene);
         reg("component/BottlePhysicsComp.ts",BottlePhysicsComp);
         reg("control/FruitesController.ts",FruitesController);
+        reg("component/PropBoxController.ts",PropBoxController);
         reg("component/ScoreController.ts",ScoreController);
         reg("component/FruitePhysicsComp.ts",FruitePhysicsComp);
     }

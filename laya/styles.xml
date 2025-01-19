@@ -20,4 +20,5 @@
    <item name="anim/light2/glow1.png" type="Sprite" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
    <item name="main/redline.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
    <item name="main/toolBox.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="prop/boom.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
 </res>

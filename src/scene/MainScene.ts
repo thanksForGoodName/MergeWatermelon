@@ -1,24 +1,29 @@
 import ScoreController from "../component/ScoreController";
 import { DESIGN_SCREEN_HEIGHT } from "../define/ConstDefine";
-import ResourceManager from "../manager/ResourceManager";
 import { ui } from "../ui/layaMaxUI";
 import Image = Laya.Image;
 import { FRUITE_IMG_URL } from "../define/UIDefine";
 import FruitesController from "../control/FruitesController";
 import { EventDef } from "../define/EventDefine";
+import PropsManager from "../manager/PropsManager";
+import PropBoxController from "../component/PropBoxController";
 
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
         this.screenAdapter();
         this.registEvent();
+        PropsManager.instance(PropsManager).init();
     }
 
     registEvent() {
         Laya.stage.on(EventDef.ADD_SCORE, this, this.addScore);
         Laya.stage.on(EventDef.SET_NEXT_FUITE, this, this.setNextFruite);
-        Laya.stage.on(EventDef.OVER_GAME, this, this.overGame)
-        Laya.stage.on(EventDef.RESET_GAME, this, this.resetGame)
+        Laya.stage.on(EventDef.OVER_GAME, this, this.overGame);
+        Laya.stage.on(EventDef.RESET_GAME, this, this.resetGame);
+
+        (this.propBox.getComponent(PropBoxController) as PropBoxController).registePropsOutBox(this.touchArea);
     }
+
 
     /**
      * 屏幕适配
@@ -33,9 +38,9 @@ export default class MainScene extends ui.scenes.MainSceneUI {
         this.contentBox.y *= scale
         this.contentBox.x = this.bg.width / 2;
 
-        this.toolBox.scale(scale, scale);
-        this.toolBox.y *= scale
-        this.toolBox.x = this.bg.width / 2;
+        this.propBox.scale(scale, scale);
+        this.propBox.y *= scale
+        this.propBox.x = this.bg.width / 2;
 
         this.topBox.scale(scale, scale);
         this.topBox.x *= scale;
