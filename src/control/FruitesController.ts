@@ -38,6 +38,7 @@ export default class FruitesController extends Script {
         Laya.stage.on(EventDef.MARK_IN_BOTTLE, this, this.markAsInBottle);
         Laya.stage.on(EventDef.RELEASE_CONTROLING_OBJ, this, this.releaseControllingObj);
         Laya.stage.on(EventDef.ADD_BLOOM_ANI, this, this.addBloomAni);
+        Laya.stage.on(EventDef.REMOVE_FROM_BOTTLE, this, this.removeFromBottle);
     }
 
     randomAFruiteLevel(): number {
@@ -91,6 +92,7 @@ export default class FruitesController extends Script {
             parent: this.box,
             pos,
             size: { width: AniSize[`bloom_${level}`], height: AniSize[`bloom_${level}`] },
+            scale: { scaleX: 2, scaleY: 2 },
             pivot: { pivotX: AniSize[`bloom_${level}`] / 2, pivotY: AniSize[`bloom_${level}`] / 2 }
         });
     }
@@ -168,6 +170,13 @@ export default class FruitesController extends Script {
 
     markAsInBottle(fruit: Image) {
         this.inBottleArr.push(fruit);
+    }
+
+    removeFromBottle(fruite: Image) {
+        const index = this.inBottleArr.indexOf(fruite);
+        if (index !== -1) {
+            this.inBottleArr.splice(index, 1);
+        }
     }
 
     overGame() {

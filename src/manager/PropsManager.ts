@@ -56,11 +56,11 @@ export default class PropsManager extends Singleton<PropsManager> {
         prop.showUINode(this.getLeftPropNum(name));
     }
 
-    useProp(name: string | PropsName) {
+    useProp(name: string | PropsName, pos: { x: number, y: number }) {
         const prop = this.propsMap.get(name as PropsName).pop();
         this.chosenProp.set(name as PropsName, 0);
         prop.showUINode(this.getLeftPropNum(name));
-        prop.useProp();
+        prop.useProp(pos.x, pos.y);
     }
 
 }

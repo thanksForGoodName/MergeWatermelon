@@ -85,7 +85,7 @@ export default class BaseProp {
     createProp() {
     }
 
-    useProp() {
+    useProp(x: number, y: number) {
     }
 
 }

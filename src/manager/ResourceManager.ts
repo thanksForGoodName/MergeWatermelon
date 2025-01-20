@@ -67,7 +67,7 @@ export default class ResourceManager extends Singleton<ResourceManager> {
         size?: { width: number, height: number },
         scale?: { scaleX: number, scaleY: number },
         pivot?: { pivotX: number, pivotY: number }
-    }) {
+    }): Animation {
         const ani = this.getAnimation(param.aniName);
         if (!ani) {
             return;
@@ -75,7 +75,6 @@ export default class ResourceManager extends Singleton<ResourceManager> {
         if (param.size) {
             ani.size(param.size.width, param.size.height);
         }
-        ani.size(80, 80);
 
         if (param.scale) {
             ani.scale(param.scale.scaleX, param.scale.scaleY);
@@ -84,13 +83,13 @@ export default class ResourceManager extends Singleton<ResourceManager> {
         if (param.pivot) {
             ani.pivot(param.pivot.pivotX, param.pivot.pivotY);
         }
-        ani.scale(2, 2);
 
         ani.pos(param.pos.x, param.pos.y);
         ani.zOrder = Number.MAX_SAFE_INTEGER;
         param.parent.addChild(ani);
         ani.play(0, false);
-        ani.on(Laya.Event.COMPLETE, this, this.recoverAnimation, [ani, param.aniName])
+        ani.on(Laya.Event.COMPLETE, this, this.recoverAnimation, [ani, param.aniName]);
+        return ani;
     }
 
     public getAnimation(aniName: string) {

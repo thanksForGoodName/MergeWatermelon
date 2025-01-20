@@ -64,11 +64,13 @@ export default class FruitePhysicsComp extends Script {
 
         Laya.Tween.to(other, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler.create(this, () => {
             other.removeSelf();
+            Laya.stage.event(EventDef.REMOVE_FROM_BOTTLE, other)
             Laya.stage.event(EventDef.CREATE_FRUITE, [level, pos, false]);
             Laya.stage.event(EventDef.ADD_SCORE, SCORE_ARRAY[level]);
         }))
         Laya.Tween.to(self, { x: pos.x, y: pos.y, scaleX: 0.8, scaleY: 0.8 }, 200, Ease.elasticInOut, Handler.create(this, () => {
             self.removeSelf();
+            Laya.stage.event(EventDef.REMOVE_FROM_BOTTLE, self)
         }))
     }
 

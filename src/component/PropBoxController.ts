@@ -122,6 +122,11 @@ export default class PropBoxController extends Laya.Script {
      * @param index 
      */
     onMouseUpProp(index: number): void {
+        if (!this.isMouseDown) {
+            return;
+        }
+
+        this.isMouseDown = false;
         const propIcon = ((this.spaceArr[index] as Box).getChildAt(0) as Image);
         if (!this.isOutBox) {
             if (propIcon) {
@@ -130,7 +135,8 @@ export default class PropBoxController extends Laya.Script {
             }
         } else {
             console.log('使用道具');
-            PropsManager.instance(PropsManager).useProp(propIcon.name);
+            const pos = { x: this.touchingImg.x, y: this.touchingImg.y }
+            PropsManager.instance(PropsManager).useProp(propIcon.name, pos);
         }
         if (this.touchingImg) {
             this.touchingImg.removeSelf();
