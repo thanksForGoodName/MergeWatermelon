@@ -557,6 +557,7 @@
                 this.fruite.removeSelf();
                 this.fruite.destroy();
                 console.log('水果掉出瓶子之外了，销毁');
+                Laya.Dialog.open(JsonResDef.overGameDialog);
             }
         }
         onTriggerEnter(other, self, contact) {
@@ -617,6 +618,7 @@
             this.box = this.owner;
             this.touchArea = this.box.getChildByName('touchArea');
             this.bottleImg = this.box.getChildByName('bottleImg');
+            this.lineLimit = this.box.getChildByName('lineArea');
             this.registEvent();
             this.registTouchEvent();
         }
@@ -658,7 +660,10 @@
                 fruit.pos(pos.x, pos.y);
             }
             else {
-                fruit.x = this.touchArea.mouseX;
+                let x = this.touchArea.mouseX;
+                x = x < this.lineLimit.x ? this.lineLimit.x : x;
+                x = x > (this.lineLimit.x + this.lineLimit.width) ? (this.lineLimit.x + this.lineLimit.width) : x;
+                fruit.x = x;
                 fruit.y = this.bottleImg.y - fruit.height;
             }
             if (needControl) {
@@ -708,9 +713,12 @@
         }
         onAreaMouseMove() {
             if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
-                this.controllingObj.owner.x = this.touchArea.mouseX;
+                let x = this.touchArea.mouseX;
+                x = x < this.lineLimit.x ? this.lineLimit.x : x;
+                x = x > (this.lineLimit.x + this.lineLimit.width) ? (this.lineLimit.x + this.lineLimit.width) : x;
+                this.controllingObj.owner.x = x;
                 if (this.guideLine && this.guideLine.visible) {
-                    this.guideLine.x = this.touchArea.mouseX;
+                    this.guideLine.x = x;
                 }
             }
         }
@@ -1071,9 +1079,12 @@
             this.propBox.scale(scale, scale);
             this.propBox.y *= scale;
             this.propBox.x = this.bg.width / 2;
-            this.topBox.scale(scale, scale);
-            this.topBox.x *= scale;
-            this.topBox.y *= scale;
+            this.nextImg.scale(scale, scale);
+            this.scoreSpr.scale(scale, scale);
+            const boundary = (Laya.stage.width / DESIGN_SCREEN_WIDTH) * 20;
+            this.nextBox.right = this.nextBox.width * this.nextImg.scaleX + boundary;
+            this.scoreSpr.left = 0;
+            this.touchArea.scaleX = (1 / scale) * (Laya.stage.width / DESIGN_SCREEN_WIDTH);
         }
         addScore(num) {
             this.scoreBox.getComponent(ScoreController).setTextImg(num);
@@ -1169,7 +1180,7 @@
     GameConfig.startScene = "scenes/MainScene.scene";
     GameConfig.sceneRoot = "";
     GameConfig.debug = false;
-    GameConfig.stat = true;
+    GameConfig.stat = false;
     GameConfig.physicsDebug = false;
     GameConfig.exportSceneToJson = true;
     GameConfig.init();
