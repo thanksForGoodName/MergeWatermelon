@@ -8,6 +8,7 @@ import Point = Laya.Point;
 import Handler = Laya.Handler;
 import Ease = Laya.Ease;
 import { EventDef } from "../define/EventDefine";
+import { JsonResDef } from "../define/UIDefine";
 
 
 export default class FruitePhysicsComp extends Script {
@@ -32,6 +33,7 @@ export default class FruitePhysicsComp extends Script {
             this.fruite.removeSelf();
             this.fruite.destroy();
             console.log('水果掉出瓶子之外了，销毁');
+            Laya.Dialog.open(JsonResDef.overGameDialog)
         }
     }
 

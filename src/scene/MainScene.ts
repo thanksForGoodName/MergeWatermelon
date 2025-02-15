@@ -1,5 +1,5 @@
 import ScoreController from "../component/ScoreController";
-import { DESIGN_SCREEN_HEIGHT } from "../define/ConstDefine";
+import { DESIGN_SCREEN_HEIGHT, DESIGN_SCREEN_WIDTH } from "../define/ConstDefine";
 import { ui } from "../ui/layaMaxUI";
 import Image = Laya.Image;
 import { FRUITE_IMG_URL } from "../define/UIDefine";
@@ -7,7 +7,6 @@ import FruitesController from "../control/FruitesController";
 import { EventDef } from "../define/EventDefine";
 import PropsManager from "../manager/PropsManager";
 import PropBoxController from "../component/PropBoxController";
-
 export default class MainScene extends ui.scenes.MainSceneUI {
     onAwake(): void {
         this.screenAdapter();
@@ -42,9 +41,14 @@ export default class MainScene extends ui.scenes.MainSceneUI {
         this.propBox.y *= scale
         this.propBox.x = this.bg.width / 2;
 
-        this.topBox.scale(scale, scale);
-        this.topBox.x *= scale;
-        this.topBox.y *= scale;
+        this.nextImg.scale(scale, scale);
+        this.scoreSpr.scale(scale, scale);
+
+        const boundary = (Laya.stage.width / DESIGN_SCREEN_WIDTH) * 20;
+        this.nextBox.right = this.nextBox.width * this.nextImg.scaleX + boundary;
+        this.scoreSpr.left = 0;
+
+        this.touchArea.scaleX = (1 / scale) * (Laya.stage.width / DESIGN_SCREEN_WIDTH);
     }
 
 

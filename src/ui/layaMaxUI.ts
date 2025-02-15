@@ -19,12 +19,14 @@ export module ui.scenes {
     export class MainSceneUI extends Scene {
 		public bg:Laya.Sprite;
 		public contentBox:Laya.Box;
+		public lineArea:Laya.Sprite;
 		public bottleImg:Laya.Image;
 		public touchArea:Laya.Sprite;
 		public propBox:Laya.Box;
 		public propBg:Laya.Sprite;
-		public topBox:Laya.Box;
+		public nextBox:Laya.Box;
 		public nextImg:Laya.Image;
+		public scoreSpr:Laya.Image;
 		public crown:Laya.Sprite;
 		public scoreBox:Laya.Box;
         constructor(){ super()}

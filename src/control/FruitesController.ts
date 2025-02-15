@@ -13,7 +13,8 @@ import { EventDef } from "../define/EventDefine";
  */
 export default class FruitesController extends Script {
     private box: Box;
-    private touchArea: Sprite
+    private touchArea: Sprite;
+    private lineLimit: Sprite;
     private controllingObj: FruitePhysicsComp;
 
     public bottleImg: Image;
@@ -29,6 +30,7 @@ export default class FruitesController extends Script {
         this.box = this.owner as Box;
         this.touchArea = this.box.getChildByName('touchArea') as Sprite;
         this.bottleImg = this.box.getChildByName('bottleImg') as Image;
+        this.lineLimit = this.box.getChildByName('lineArea') as Sprite;
         this.registEvent();
         this.registTouchEvent();
     }
@@ -72,7 +74,10 @@ export default class FruitesController extends Script {
         if (pos) {
             fruit.pos(pos.x, pos.y);
         } else {
-            fruit.x = this.touchArea.mouseX;
+            let x = this.touchArea.mouseX;
+            x = x < this.lineLimit.x ? this.lineLimit.x : x;
+            x = x > (this.lineLimit.x + this.lineLimit.width) ? (this.lineLimit.x + this.lineLimit.width) : x;
+            fruit.x = x;
             fruit.y = this.bottleImg.y - fruit.height
         }
         if (needControl) {
@@ -128,9 +133,12 @@ export default class FruitesController extends Script {
 
     onAreaMouseMove() {
         if (this.controllingObj && this.inBottleArr.indexOf(this.controllingObj.owner) === -1) {
-            (this.controllingObj.owner as Image).x = this.touchArea.mouseX;
+            let x = this.touchArea.mouseX;
+            x = x < this.lineLimit.x ? this.lineLimit.x : x;
+            x = x > (this.lineLimit.x + this.lineLimit.width) ? (this.lineLimit.x + this.lineLimit.width) : x;
+            (this.controllingObj.owner as Image).x = x;
             if (this.guideLine && this.guideLine.visible) {
-                this.guideLine.x = this.touchArea.mouseX;
+                this.guideLine.x = x;
             }
         }
     }
