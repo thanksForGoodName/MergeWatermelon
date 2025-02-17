@@ -24,7 +24,18 @@ export default class FruitesController extends Script {
 
     private inBottleArr = [];
     private canCreate = true;
-
+    /**
+     * 连击次数
+     */
+    private continueScore = 0;
+    /**
+     * 上一次相同水果撞击的时间
+     */
+    private lastTakeTime = 0;
+    /**
+     * 计时器
+     */
+    private curTime = 0;
 
     onAwake() {
         this.box = this.owner as Box;
@@ -35,12 +46,53 @@ export default class FruitesController extends Script {
         this.registTouchEvent();
     }
 
+    onUpdate(): void {
+        this.curTime += Laya.timer.delta;
+    }
+
     registEvent() {
         Laya.stage.on(EventDef.CREATE_FRUITE, this, this.createFruite);
         Laya.stage.on(EventDef.MARK_IN_BOTTLE, this, this.markAsInBottle);
         Laya.stage.on(EventDef.RELEASE_CONTROLING_OBJ, this, this.releaseControllingObj);
         Laya.stage.on(EventDef.ADD_BLOOM_ANI, this, this.addBloomAni);
         Laya.stage.on(EventDef.REMOVE_FROM_BOTTLE, this, this.removeFromBottle);
+        Laya.stage.on(EventDef.CHECK_CONTINUE_TIMES, this, this.checkContinueScore);
+    }
+
+    /**
+     * 检查连击次数
+     * @param curTime 
+     */
+    checkContinueScore() {
+        const lastContinueScore = this.continueScore;
+        if ((this.curTime - this.lastTakeTime) < 500) {
+            this.continueScore++;
+        } else {
+            this.continueScore = 0;
+        }
+
+        if (lastContinueScore >= 3) {
+            this.continueScore = 0;
+            this.playBravoAni(new Image(UrlResDef.bravoImg));
+        } else if (lastContinueScore >= 2) {
+            this.playBravoAni(new Image(UrlResDef.greatImg));
+        }
+
+        this.lastTakeTime = this.curTime;
+    }
+
+    playBravoAni(img: Image) {
+        img.pivot(img.width / 2, img.height / 2)
+        img.scale(0, 0);
+        img.pos(this.box.width / 2, this.box.height / 3);
+        this.box.addChild(img);
+        img.zOrder = zOdersEnum.animation;
+        Laya.Tween.to(img, { scaleX: 1, scaleY: 1, y: img.y - 100 }, 500, null, Laya.Handler.create(this, () => {
+            Laya.Tween.to(img, { scaleX: 1.5, scaleY: 1.5, alpha: 0 }, 200, null, Laya.Handler.create(this, () => {
+                img.removeSelf();
+                img.destroy();
+            }), 200)
+        }))
     }
 
     randomAFruiteLevel(): number {
@@ -202,7 +254,9 @@ export default class FruitesController extends Script {
     resetGame() {
         this.inBottleArr = [];
         for (let i = this.box.numChildren - 1; i >= 0; i--) {
-            if (this.box.getChildAt(i).name !== 'bottleImg' && this.box.getChildAt(i).name !== 'touchArea') {
+            if (this.box.getChildAt(i).name !== 'bottleImg' &&
+                this.box.getChildAt(i).name !== 'touchArea' &&
+                this.box.getChildAt(i).name !== 'lineArea') {
                 this.box.getChildAt(i).removeSelf();
             }
         }

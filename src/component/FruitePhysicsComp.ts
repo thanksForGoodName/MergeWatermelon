@@ -52,6 +52,7 @@ export default class FruitePhysicsComp extends Script {
             self.owner.getComponent(RigidBody).destroy();
             other.owner.getComponent(CircleCollider).destroy();
             self.owner.getComponent(CircleCollider).destroy();
+            Laya.stage.event(EventDef.CHECK_CONTINUE_TIMES);
             this.mergeFruite(otherFruite, selfFruite, label, radius);
         }
     }

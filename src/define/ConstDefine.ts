@@ -46,5 +46,6 @@ export const FRUITE_SPEED = 10;
 export enum zOdersEnum {
     tool = 1000,
     fruite = 999,
-    guideLine = 998
+    guideLine = 998,
+    animation = 2000,
 }

@@ -198,7 +198,8 @@
         SET_NEXT_FUITE: 'SET_NEXT_FUITE',
         OVER_GAME: 'OVER_GAME',
         RESET_GAME: 'RESET_GAME',
-        REFRESH_PROP_BOX_UI: 'REFRESH_PROP_BOX_UI'
+        REFRESH_PROP_BOX_UI: 'REFRESH_PROP_BOX_UI',
+        CHECK_CONTINUE_TIMES: 'CHECK_CONTINUE_TIMES'
     };
 
     var Dialog = Laya.Dialog;
@@ -254,6 +255,8 @@
     const PROP_IMG_URL = 'prop/';
     const UrlResDef = {
         guideLine: 'main/redline.png',
+        bravoImg: 'main/bravo.png',
+        greatImg: 'main/great.png',
     };
     const JsonResDef = {
         overGameDialog: 'dialogs/OverGameDialog.json'
@@ -347,6 +350,7 @@
         zOdersEnum[zOdersEnum["tool"] = 1000] = "tool";
         zOdersEnum[zOdersEnum["fruite"] = 999] = "fruite";
         zOdersEnum[zOdersEnum["guideLine"] = 998] = "guideLine";
+        zOdersEnum[zOdersEnum["animation"] = 2000] = "animation";
     })(zOdersEnum || (zOdersEnum = {}));
 
     var Loader = Laya.Loader;
@@ -575,6 +579,7 @@
                 self.owner.getComponent(RigidBody).destroy();
                 other.owner.getComponent(CircleCollider).destroy();
                 self.owner.getComponent(CircleCollider).destroy();
+                Laya.stage.event(EventDef.CHECK_CONTINUE_TIMES);
                 this.mergeFruite(otherFruite, selfFruite, label, radius);
             }
         }
@@ -613,6 +618,9 @@
             this.nextFruiteLevel = null;
             this.inBottleArr = [];
             this.canCreate = true;
+            this.continueScore = 0;
+            this.lastTakeTime = 0;
+            this.curTime = 0;
         }
         onAwake() {
             this.box = this.owner;
@@ -622,12 +630,46 @@
             this.registEvent();
             this.registTouchEvent();
         }
+        onUpdate() {
+            this.curTime += Laya.timer.delta;
+        }
         registEvent() {
             Laya.stage.on(EventDef.CREATE_FRUITE, this, this.createFruite);
             Laya.stage.on(EventDef.MARK_IN_BOTTLE, this, this.markAsInBottle);
             Laya.stage.on(EventDef.RELEASE_CONTROLING_OBJ, this, this.releaseControllingObj);
             Laya.stage.on(EventDef.ADD_BLOOM_ANI, this, this.addBloomAni);
             Laya.stage.on(EventDef.REMOVE_FROM_BOTTLE, this, this.removeFromBottle);
+            Laya.stage.on(EventDef.CHECK_CONTINUE_TIMES, this, this.checkContinueScore);
+        }
+        checkContinueScore() {
+            const lastContinueScore = this.continueScore;
+            if ((this.curTime - this.lastTakeTime) < 500) {
+                this.continueScore++;
+            }
+            else {
+                this.continueScore = 0;
+            }
+            if (lastContinueScore >= 3) {
+                this.continueScore = 0;
+                this.playBravoAni(new Image$1(UrlResDef.bravoImg));
+            }
+            else if (lastContinueScore >= 2) {
+                this.playBravoAni(new Image$1(UrlResDef.greatImg));
+            }
+            this.lastTakeTime = this.curTime;
+        }
+        playBravoAni(img) {
+            img.pivot(img.width / 2, img.height / 2);
+            img.scale(0, 0);
+            img.pos(this.box.width / 2, this.box.height / 3);
+            this.box.addChild(img);
+            img.zOrder = zOdersEnum.animation;
+            Laya.Tween.to(img, { scaleX: 1, scaleY: 1, y: img.y - 100 }, 500, null, Laya.Handler.create(this, () => {
+                Laya.Tween.to(img, { scaleX: 1.5, scaleY: 1.5, alpha: 0 }, 200, null, Laya.Handler.create(this, () => {
+                    img.removeSelf();
+                    img.destroy();
+                }), 200);
+            }));
         }
         randomAFruiteLevel() {
             const rate = Math.random();
@@ -772,7 +814,9 @@
         resetGame() {
             this.inBottleArr = [];
             for (let i = this.box.numChildren - 1; i >= 0; i--) {
-                if (this.box.getChildAt(i).name !== 'bottleImg' && this.box.getChildAt(i).name !== 'touchArea') {
+                if (this.box.getChildAt(i).name !== 'bottleImg' &&
+                    this.box.getChildAt(i).name !== 'touchArea' &&
+                    this.box.getChildAt(i).name !== 'lineArea') {
                     this.box.getChildAt(i).removeSelf();
                 }
             }

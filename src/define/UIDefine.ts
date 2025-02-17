@@ -7,6 +7,8 @@ export const PROP_IMG_URL = 'prop/'
 
 export const UrlResDef = {
     guideLine: 'main/redline.png',
+    bravoImg: 'main/bravo.png',
+    greatImg: 'main/great.png',
 }
 
 export const JsonResDef = {
